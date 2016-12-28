@@ -3,13 +3,21 @@ package main
 import (
 	"net/http"
 	"html/template"
+	"database/sql"
 )
 
+var (
+	maxQuestions = 50
+	db *sql.DB
+)
+
+type RegisterResponse struct {
+	SessionId string
+}
+
 type QuestionResponse struct {
-	Result []struct {
-		Question int
-		Answer string
-	}
+	Question string
+	Answer string
 }
 
 type QuestionResult struct {
@@ -35,7 +43,16 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "Register.html")
 }
 
+func jqueryHandler(w http.ResponseWriter, r *http.Request) {
+	displayWebPage(w, "js/jquerymin.js")
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 	http.HandleFunc("/register", registerHandler)
+	http.HandleFunc("/js/jquerymin.js", jqueryHandler)
 	http.ListenAndServe(":9000", nil)
 }
