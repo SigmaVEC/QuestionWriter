@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      form {
+      #form {
         display: block;
         margin: 130px;
         overflow: hidden;
@@ -16,22 +16,22 @@
         font-size: 0;
       }
 
-      form div {
+      #form div {
                   background-color: lightgrey;
           }
 
-      form div label {
+      #form div label {
         display: block;
         padding: 20px 20px 10px;
         vertical-align: top;
         font-size: 13px;
         font-weight: bold;
-        text-transform: uppercase;
+        text-trans#form: uppercase;
         color: #939393;
         cursor: pointer;
       }
 
-      form div label input {
+      #form div label input {
         display: inline-block;
         position: relative;
         width: 100%;
@@ -50,7 +50,7 @@
       }
 
       @media(min-width: 800px){
-        form div { display: inline-block; }
+        #form div { display: inline-block; }
         .col-submit { display: block; }
 
         .col-2, .col-3, .col-4 { box-shadow: 1px 1px #e4e4e4; border: none; }
@@ -88,15 +88,15 @@
     </style>
     <script>
     function check(){
-        <!--alert("sdf");-->
-        $.get("test",{}, function(data){
-                alert("Data: " + data);
-            });
+	
+        $.get("/test",{}, function(result){
+                alert("Data: " + result);
+         });
     }
 </script>
 </head>
 <body >
-<form method="POST">
+<div id="form">
     <div class="col-2">
         <label>
             Name
@@ -144,6 +144,6 @@
     <div class="col-submit">
         <button onclick="check()" id="button" class="submitbtn" tabindex="8">Register</button>
     </div>
-</form>
+</div>
 </body>
 </html>

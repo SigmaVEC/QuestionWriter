@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"html/template"
 	"database/sql"
-	"io"
+	//"io"
 	"fmt"
 )
 
@@ -45,18 +45,16 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "Register.html")
 }
 
-func jqueryHandler(w http.ResponseWriter, r *http.Request) {
-	displayWebPage(w, "js/jquerymin.js")
-}
 
 func test(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("sdhf")
-	io.WriteString(w, "asd")
+	fmt.Fprintf(w,"sdhf")
+	//io.WriteString(w, "asd")
 }
 
 func main() {
+	fs := http.FileServer(http.Dir("./static")) //added this line
+	http.Handle("/", fs)                        //added this line
 	http.HandleFunc("/test", test)
 	http.HandleFunc("/register", registerHandler)
-	http.HandleFunc("/js/jquerymin.js", jqueryHandler)
 	http.ListenAndServe(":9000", nil)
 }
