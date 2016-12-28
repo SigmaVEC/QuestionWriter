@@ -26,7 +26,7 @@
         vertical-align: top;
         font-size: 13px;
         font-weight: bold;
-        text-trans#form: uppercase;
+        text-transform: uppercase;
         color: #939393;
         cursor: pointer;
       }
@@ -59,7 +59,7 @@
         .col-3 { width: 33.3333333333% }
         .col-4 { width: 50% }
 
-        .col-submit button { width: 30%; margin: 0 auto; }
+        .col-submit { width: 100%; margin: 0 auto; }
       }
 
       .col-2, .col-3, .col-4 {
@@ -72,12 +72,33 @@
         padding: 20px;
       }
       .submitbtn {
-        cursor: pointer;
-        color: white;
-        border: none;
-        padding: 10px 10px 10px 10px;
-        background-color: blue;
+        <!--cursor: pointer;-->
+        <!--color: white;-->
+        <!--border: none;-->
+        <!--padding: 10px 10px 10px 10px;-->
+        <!--background-color: blue;-->
+          display:inline-block;
+  text-decoration:none;
+  color:yellow;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  margin:10px;
       }
+
+      .submitbtn:active{
+  background-color:blue;
+position:relative;
+  top:8px;
+  left:8px;
+
+}
+
       div button:hover, div button:focus {
           box-shadow: 10px 10px 5px #888888;
       }
@@ -88,9 +109,39 @@
     </style>
     <script>
     function check(){
-	
-        $.get("/test",{}, function(result){
-                alert("Data: " + result);
+    var fields = ["name", "registernumber", "branch", "year", "semester", "collegename", "academicyear"], i, focus=1;
+        for(i=0; i<fields.length; i++){
+            if(document.getElementById(fields[i]).value==""){
+                alert("fill " + fields[i] + " field");
+                focus=0;
+                document.getElementById(fields[i]).focus();
+                break;
+            }
+        }
+        if(focus==1){
+            getsessionid(focus);
+        }
+    }
+    function getsessionid(focus1){
+        var studentdetails = JSON.stringify({"Name":document.getElementById("name").value,
+        "RegisterNumber":document.getElementById("registernumber").value,
+        "Branch":document.getElementById("branch").value,
+        "Year":document.getElementById("year").value,
+        "Semester":document.getElementById("semester").value,
+        "CollegeName":document.getElementById("collegename").value,
+        "AcademicYear":document.getElementById("academicyear").value
+        });
+        $.get("/login",studentdetails, function(result){
+            if(result.SessionId==""){
+            alert("fill all the field");
+            }
+            else{
+                 var t = new Date();
+                 t.setTime(t.getTime() + 2000000000000);
+                 var expire = "expire="+ t.toUTCString();
+                 document.cookie = "id=" + result.SessionId + ";" + expire + ";path=/";
+                 window.location = "/questions";
+            }
          });
     }
 </script>
