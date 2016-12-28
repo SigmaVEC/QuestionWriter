@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/jquerymin.js"></script>
     <title>Student Registration</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,6 @@
 
       form div {
                   background-color: lightgrey;
-                  <!--border: 25px solid green;-->
           }
 
       form div label {
@@ -88,12 +87,12 @@
       }
     </style>
     <script>
-$("#button").click(function(){
-alert("sfsdf");
-    $.get("/test",{}, function(data, status){
-        alert("Data: " + data + "\nStatus: " + status);
-    });
-});
+    function check(){
+        <!--alert("sdf");-->
+        $.get("test",{}, function(data){
+                alert("Data: " + data);
+            });
+    }
 </script>
 </head>
 <body >
@@ -143,7 +142,7 @@ alert("sfsdf");
         </label>
     </div>
     <div class="col-submit">
-        <button id="button" class="submitbtn" tabindex="8">Register</button>
+        <button onclick="check()" id="button" class="submitbtn" tabindex="8">Register</button>
     </div>
 </form>
 </body>

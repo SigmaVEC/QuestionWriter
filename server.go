@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"html/template"
 	"database/sql"
+	"io"
+	"fmt"
 )
 
 var (
@@ -47,11 +49,13 @@ func jqueryHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "js/jquerymin.js")
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-
+func test(w http.ResponseWriter, r *http.Request) {
+	fmt.Print("sdhf")
+	io.WriteString(w, "asd")
 }
 
 func main() {
+	http.HandleFunc("/test", test)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/js/jquerymin.js", jqueryHandler)
 	http.ListenAndServe(":9000", nil)
