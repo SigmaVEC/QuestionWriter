@@ -178,7 +178,55 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
-	//TODO: Update Question Handler
+	sessionId := r.FormValue("sessionId")
+	updateJson := r.FormValue("updateJson")
+	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
+	err := dbSession.Scan(&sessionId)
+
+	if err == nil && len(sessionId) != 0 {
+		data := []byte(updateJson)
+		var update QuestionUpdateRequest
+		err = json.Unmarshal(data, &update)
+
+		if err == nil {
+			var temp int
+			dbQuestion := db.QueryRow("SELECT QuestionId FROM Questions WHERE QuestionId=?", update.QuestionId)
+			err = dbQuestion.Scan(&temp)
+
+			if err == nil {
+				dbStudentAnswer := db.QueryRow("SELECT QuestionId FROM StudentAnswers WHERE SessionId=? AND QuestionId=?", sessionId, update.QuestionId)
+				err = dbStudentAnswer.Scan(&temp)
+
+				if err == nil {
+					_, err = db.Exec("UPDATE StudentAnswers SET Answer=? WHERE SessionId=? AND QuestionId=?", update.Answer, sessionId, update.QuestionId)
+
+					if err == nil {
+						json.NewEncoder(w).Encode(struct {
+							Message string
+						}{Message: "Success"})
+					} else {
+						io.WriteString(w, emptyJson)
+					}
+				} else {
+					_, err = db.Exec("INSERT INTO StudentAnswers VALUES(?,?,?)", sessionId, update.QuestionId, update.Answer)
+
+					if err == nil {
+						json.NewEncoder(w).Encode(struct {
+							Message string
+						}{Message: "Success"})
+					} else {
+						io.WriteString(w, emptyJson)
+					}
+				}
+			} else {
+				io.WriteString(w, emptyJson)
+			}
+		} else {
+			io.WriteString(w, emptyJson)
+		}
+	} else {
+		io.WriteString(w, emptyJson)
+	}
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -196,6 +244,7 @@ func main() {
 		http.HandleFunc("/register", registerHandler)
 		http.HandleFunc("/login", loginHandler)
 		http.HandleFunc("/questions", getQuestionsHandler)
+		http.HandleFunc("/update", updateQuestionHandler)
 		http.HandleFunc("/logout", logoutHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
