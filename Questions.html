@@ -127,13 +127,13 @@
                 $.get("/questions", {} ,function(data){
                     disablenext();
                     addquestion(data.question);
-                    if(data.audio!="no"){
+                    if(data.File==null){
                         addaudiofile(data.audio);
-                        addchoice(data.op);
+                        addchoice(data.op); //// audio or video
                     }
-                    if(data.video!="no"){
+                    if(data.File!="no"){
                         addvideofile(data.video);
-                        addchoice(data.op);
+                        addchoice(data.Choice);/// array 01234
                     }
                 });
             });

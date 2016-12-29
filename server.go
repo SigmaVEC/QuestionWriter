@@ -17,25 +17,26 @@ var (
 	sessionKeyLength=50
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "test"
-	password string = "test"
+	user string = "root"
+	password string = "toor"
 	database string = "QuestionWriter"
 )
 
 type RegisterRequest struct {
-	StudentId string
-	Name string
-	AcademicYear int
-	Department string
-	Section string
+	RegisterNumber string
+	Name           string
+	AcademicYear   int
+	Branch         string
+	Semester int
+	CollegeName string
 }
 
 type RegisterResponse struct {
 	SessionId string
 }
 
-type QuestionUpdateResponse struct {
-	Question string
+type QuestionUpdateRequest struct {
+	QuestionId int
 	Answer string
 }
 
@@ -46,6 +47,7 @@ type QuestionListResponse struct {
 		Type string
 		Description string
 		SubQuestion []struct {
+			QuestionId int
 			Question string
 			Type string
 			Choice map[int] string
@@ -75,7 +77,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?)", reply.SessionId, student.StudentId, student.Name, student.AcademicYear, student.Department, student.Section)
+			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Branch, student.Semester, student.CollegeName)
 
 			if err == nil {
 				json.NewEncoder(w).Encode(reply)
@@ -112,8 +114,9 @@ func main() {
 		http.Handle("/", fs)
 		http.HandleFunc("/register", registerHandler)
 		http.HandleFunc("/login", loginHandler)
+		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/logout", logoutHandler)
-		http.ListenAndServe(":80", nil)
+		http.ListenAndServe(":8000", nil)
 	} else {
 		panic(dbErr)
 	}

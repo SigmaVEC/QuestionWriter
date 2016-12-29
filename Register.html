@@ -108,6 +108,8 @@ position:relative;
       }
     </style>
     <script>
+    function s(){
+    $('#button').prop('disabled', true);}
     function check(){
     var fields = ["name", "registernumber", "branch", "year", "semester", "collegename", "academicyear"], i, focus=1;
         for(i=0; i<fields.length; i++){
@@ -119,34 +121,34 @@ position:relative;
             }
         }
         if(focus==1){
-            getsessionid(focus);
+            getsessionid();
         }
     }
-    function getsessionid(focus1){
+    function getsessionid(){
         var studentdetails = JSON.stringify({"Name":document.getElementById("name").value,
         "RegisterNumber":document.getElementById("registernumber").value,
         "Branch":document.getElementById("branch").value,
-        "Year":document.getElementById("year").value,
-        "Semester":document.getElementById("semester").value,
+        "Semester":parseInt(document.getElementById("semester").value),
         "CollegeName":document.getElementById("collegename").value,
-        "AcademicYear":document.getElementById("academicyear").value
+        "AcademicYear":parseInt(document.getElementById("academicyear").value)
         });
-        $.get("/login",studentdetails, function(result){
-            if(result.SessionId==""){
+        $.get("/login", { studentJson: studentdetails }, function(result){
+            var sess = JSON.parse(result);
+            if(sess.SessionId==""){
             alert("fill all the field");
             }
             else{
                  var t = new Date();
-                 t.setTime(t.getTime() + 2000000000000);
+                 t.setTime(t.getTime() + 60*60*24);
                  var expire = "expire="+ t.toUTCString();
-                 document.cookie = "id=" + result.SessionId + ";" + expire + ";path=/";
+                 document.cookie = "id=" + sess.SessionId + ";" + expire + ";";
                  window.location = "/questions";
             }
          });
     }
 </script>
 </head>
-<body >
+<body onload="s()">
 <div id="form">
     <div class="col-2">
         <label>
