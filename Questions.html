@@ -114,6 +114,8 @@
     </style>
     <script>
 //////////////////////////////////
+	var noquestion, questions;
+	var iod=0;
     function countdown( elementName, minutes, seconds )
 {
     var element, endTime, hours, mins, msLeft, time;
@@ -144,11 +146,6 @@
 
 countdown( "countdown", 30, 0 );
 ////////////////////////////////////
-    var iod=0;
-    var a=setTimeout(time,1000);
-    function time(){
-    	docum
-    }
         function checksessionid(){
         	var sessi = getCookie("id");
                     if(sessi.length<69){
@@ -177,8 +174,9 @@ countdown( "countdown", 30, 0 );
 	            	var sessi = getCookie("id");
 	            	var session = JSON.stringify({"SessionId":sessi});
 	                $.get("/questions", {studentJson: session} ,function(data){
-	                	var data1 = JSON.parse(result);
-						localStorage.setItem("JSONQuestion", data1);
+	                	window.question = JSON.parse(data);
+	                	window.noquestion = window.question;
+	                	createbutton(window.noquestion);
 	                    // fetchquestion();
 	                    // disablenext();
 	                    // addquestion(data.question);
@@ -190,10 +188,16 @@ countdown( "countdown", 30, 0 );
 	                        // addvideofile(data.video);
 	                        // addchoice(data.Choice);/// array 01234
 	                    // }
-	                // });
+	                });
 	            }
             // });
         // });
+
+        function createbutton(cb){
+        	for(var i=0; i<obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice.length;i++){
+                $('#option').append('<input id="choice"' + i + ' type="radio" name="" onclick="enablenext();savedata(i)"/><br>');
+            }
+        }
 
         function fetchquestion(nop){
         if(nop==0){

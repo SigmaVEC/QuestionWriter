@@ -1,18 +1,489 @@
+<!DOCTYPE html>
 <html>
 	<head>
+		<script src="js/jquerymin.js"></script>
 		<link rel="stylesheet" href="css/bootstrap.min.css"/>
 		<link rel="stylesheet" href="css/bootstrap-theme.css"/>
 		<script src="js/jquery.js"></script>
 		<script src="js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="js/bspage.js"></script>
+
+		<style>
+        .button{
+  display:inline-block;
+  text-decoration:none;
+  color:yellow;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  margin:10px;
+  position:fixed;
+  top:500px;
+  left:500px;
+  }
+
+  .button1{
+  display:inline-block;
+  text-decoration:none;
+  color:blue;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  margin:10px;
+  position:fixed;
+  top:500px;
+  left:300px;
+  }
+
+  .button2{
+  display:inline-block;
+  text-decoration:none;
+  color:blue;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  margin:10px;
+  position:fixed;
+  top:500px;
+  left:700px;
+  }
+
+  .button3{
+  display:inline-block;
+  text-decoration:none;
+  color:blue;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  margin:10px;
+  position:fixed;
+  top:500px;
+  left:1100px;
+  }
+
+  #button3{
+  display:inline-block;
+  text-decoration:none;
+  color:blue;
+  font-weight:bold;
+  min-width:132px;
+  min-height:37px;
+  border:1px solid black;
+  border-radius:12px;
+  text-align:center;
+  background-color:gray;
+  box-shadow:8px 8px 8px gray;
+  }
+
+.button:active{
+  background-color:blue;
+  position:fixed;
+  top:508px;
+  left:808px;
+}
+
+.button1:active{
+  background-color:blue;
+  position:fixed;
+  top:508px;
+  left:658px;
+}
+
+.button2:active{
+  background-color:blue;
+  position:fixed;
+  top:508px;
+  left:958px;
+}
+
+.button3:active{
+  background-color:blue;
+  position:fixed;
+  top:508px;
+  left:1108px;
+}
+#countdown {
+    color: #1B232F;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    position: fixed;
+    top:500px;
+    left:1000px;
+}
+    </style>
+
+    <script>
+//////////////////////////////////
+	var noquestion, questions, presentquestion, buttonnum;
+	var result = [];
+	var iod=0;
+	// countdown( "countdown", window.questions[0].Expiry, 0);
+    function countdown( elementName, minutes, seconds )
+{
+    var element, endTime, hours, mins, msLeft, time;
+
+    function twoDigits( n )
+    {
+        return (n <= 9 ? "0" + n : n);
+    }
+
+    function updateTimer()
+    {
+        msLeft = endTime - (+new Date);
+        if ( msLeft < 1000 ) {
+            element.innerHTML = "countdown's over!";
+						//
+						document.cookie = "id=null;0;";
+        } else {
+            time = new Date( msLeft );
+            hours = time.getUTCHours();
+            mins = time.getUTCMinutes();
+            element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+            setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+        }
+    }
+
+    element = document.getElementById( elementName );
+    endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+    updateTimer();
+}
+
+// countdown( "countdown", 30, 1);
+////////////////////////////////////
+        function checksessionid(){
+        	var sessi = getCookie("id");
+                    if(sessi.length<69){
+                    	return false;
+                    // disableprevious();
+                    }
+                    else {
+                    	getquestion();
+                    	return true;
+                    }
+        }
+        function getCookie(cname) {
+		    var name = cname + "=";
+		    var ca = document.cookie.split(';');
+		        var c = ca[i];
+		        var c1 = c.split('=');
+		        if(c1.length<69)
+		        	return "";
+		        else
+		        	return c1[1];
+		}
+
+        // $(document).ready(function(){
+            // $("#next").click(function(){ //////////////////////////////////////////////////
+            	function getquestion(){
+	            	var sessi = getCookie("id");
+	            	var session = JSON.stringify({"SessionId":sessi});
+								if(session){
+	                $.get("/questions", {studentJson: session} ,function(data){
+	                	window.question = JSON.parse(data);
+	                	window.noquestion = window.question[0].Question[employees[0].Question.length-1].SubQuestion[employees[0].Question[employees[0].Question.length-1].SubQuestion.length-1].QuestionId;
+	                	Createbutton(window.noquestion);
+										countdown( "countdown", window.questions[0].Expiry, 0);
+	                    // fetchquestion();
+	                    // disablenext();
+	                    // addquestion(data.question);
+	                    // if(data.File==null){
+	                        // addaudiofile(data.audio);
+	                        // addchoice(data.op); //// audio or video
+	                    // }
+	                    // if(data.File!="no"){
+	                        // addvideofile(data.video);
+	                        // addchoice(data.Choice);/// array 01234
+	                    // }
+	                });
+	            }
+							else{
+								alert("Times Up On Load");
+							}
+						}
+            // });
+        // });
+
+        //function Createbutton(cb){
+        //	for(var i=0; i<obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice.length;i++){
+          //      $('#createbutton').append('<button class="button2" id="button1"'+ i +' onclick="fetchquestion('+i+');savedata(i)"/><br>');
+            //}
+        //}
+
+		function Createbutton(){
+        	for(var i=1; i<=window.noquestion;i++){
+          		var dynamicbutton= $('<input/>').attr({ id: 'button'+i, type: 'button', name: 'btn'+i, value: i});
+          		$("#createbutton").append(dynamicbutton);
+          	}
+          }
+
+          for(i=0;i<window.noquestion;i++){
+          $(document).on('click','#button'+i,function(){
+          		//alert($("#button"+i).text());
+          		//alert($(this).val());
+          		window.buttonnum=$(this).val();
+          		jumpfetchquestion(window.buttonnum);
+          		//alert(window.a);
+			});
+			}
+
+		function jumpfetchquestion(jumpnop){
+        	var text, obj;
+	        if(jumpnop==1){
+	            disableprevious();
+	        }
+	        else {
+	            enableprevious();
+	        }
+        	//$("div").remove();//////have to change
+        	if(checksessionid){
+				for(var i=0;i<window.noquestion;i++){
+					for(var j=0;j<window.question[0].Question[i].SubQuestion.length;j++){
+						if(window.question[0].Question[i].SubQuestion[j].QuestionId==jumpnop){
+							//addquestion("window.question[0].Question["+i+"].SubQuestion["+j+"]");
+							if(window.question[0].Question[i].File==null){
+								$("#description").text(window.question[0].Question[i].Description);
+								$("#questionid").text(window.question[0].Question[i].SubQuestion[j].QuestionId);
+								$("#question").text(window.question[0].Question[i].SubQuestion[j].Question);
+									if(window.question[0].Question[i].SubQuestion[j].Choice==null){
+										$("#fillintheblank").text("fill the field");
+									}
+									else{
+										$("#choice").text(window.question[0].Question[i].SubQuestion[j].Choice);
+									}
+							}
+							else{
+								var a1 = window.question[0].Question[i].File;
+								var n = a1.length;
+								if(a1.substring(n-3, n)=="mp3"){
+									//audio
+									$("#audiofile").src=a1;
+								}
+								else if(a1.substring(n-3, n)=="mp4"){
+									//video
+									$("#videofile").text(window.question[0].Question[i].File);
+								}
+            					$("#description").text(window.question[0].Question[i].Description);
+            					$("#questionid").text(window.question[0].Question[i].SubQuestion[j].QuestionId);
+            					$("#question").text(window.question[0].Question[i].SubQuestion[j].Question);
+            					if(window.question[0].Question[i].SubQuestion[j].Choice==null){
+										$("#fillintheblank").text("fill the field");
+									}
+									else{
+									$("#choice0").text(window.question[0].Question[i].SubQuestion[j].Choice[0]);
+									$("#choice1").text(window.question[0].Question[i].SubQuestion[j].Choice[1]);
+									$("#choice2").text(window.question[0].Question[i].SubQuestion[j].Choice[2]);
+									$("#choice3").text(window.question[0].Question[i].SubQuestion[j].Choice[3]);
+									}
+							}
+            				///
+            				break;
+						}
+					}
+					break;
+				}
+			}
+			else{
+				alert("Times Up");
+			}
+        }
+
+        function nextfetchquestion(nextnop){
+        	var text, obj;
+	        window.iod = window.iod + nextnop;
+	        if(nextnop==1){
+	            disableprevious();
+	        }
+	        else {
+	            enableprevious();
+	        }
+        	///$("div").remove();//////have to change
+        	if(checksessionid){
+				for(var i=0;i<window.noquestion;i++){
+					for(var j=0;j<window.question[0].Question[i].SubQuestion.length;j++){
+						if(window.question[0].Question[i].SubQuestion[j].QuestionId==jumpnop){
+							//addquestion("window.question[0].Question["+i+"].SubQuestion["+j+"]");
+							if(window.question[0].Question[i].File==null){
+								$("#description").text(window.question[0].Question[i].Description);
+								$("#questionid").text(window.question[0].Question[i].SubQuestion[j].QuestionId);
+								$("#question").text(window.question[0].Question[i].SubQuestion[j].Question);
+									if(window.question[0].Question[i].SubQuestion[j].Choice==null){
+										$("#fillintheblank").text("fill the field");
+									}
+									else{
+									$("#description").text(window.question[0].Question[i].SubQuestion[j].Choice);
+									}
+							}
+							else{
+								var a1 = window.question[0].Question[i].File;
+								var n = a1.length;
+								if(a1.substring(n-3, n)=="mp3"){
+									//audio
+									$("#audiofile").src=a1;
+								}
+								else if(a1.substring(n-3, n)=="mp4"){
+									//video
+									// $("#filevideo").append(window.question[0].Question[i].File);
+									///need to add a1 variable instead a.mp4
+									$("#div1").html('<video width="640" height="264" controls>' + '<source src="a.mp4" type="video/mp4"></source>'+'</video>');
+
+								}
+            					$("#description").text(window.question[0].Question[i].Description);
+            					$("#questionid").text(window.question[0].Question[i].SubQuestion[j].QuestionId);
+            					$("#question").text(window.question[0].Question[i].SubQuestion[j].Question);
+            					if(window.question[0].Question[i].SubQuestion[j].Choice==null){
+										$("#fillintheblank").text("fill the field");
+									}
+									else{
+									$("#choice0").text(window.question[0].Question[i].SubQuestion[j].Choice[0]);
+									$("#choice1").text(window.question[0].Question[i].SubQuestion[j].Choice[1]);
+									$("#choice2").text(window.question[0].Question[i].SubQuestion[j].Choice[2]);
+									$("#choice3").text(window.question[0].Question[i].SubQuestion[j].Choice[3]);
+									}
+							}
+            				///
+            				break;
+						}
+					}
+					break;
+				}
+			}
+			else{
+				alert("Times Up");
+			}
+        }
+        // function addquestion(aq){
+        //     $("#question").load(aq.QuestionId);
+        //     if(aq.choice!=null)
+        //     $("#question").load(aq.choice);
+        // }
+				//
+        // function addchoice(c){
+        //     for(var i=0; i<obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice.length;i++){
+        //         $('#option').append('<input id="choice"' + i + ' type="radio" name="" onclick="enablenext();savedata(i)"/><br>');
+        //         $("#choice"+i).load(c[0]);
+        //     }
+        // }
+				//
+        // function addaudiofile(a){
+        //     $('#audio').append('<audio id="audiofile" controls/>');
+        //     $('#audiofile').append('<source src=' + a + ' type="audio/ogg" />');
+        // }
+				//
+        // function addvideofile(v){
+        //     $('#video').append('<video id="videofile" width="400" controls/>');
+        //     $('#videofile').append('<source src=' + v + ' type="video/mp4"/>');
+        // }
+
+        function disablenext(){
+            $('#next').attr('disabled','disabled');
+        }
+
+        function enablenext(){
+            $('#next').removeAttr('disabled');
+        }
+
+        function disableprevious(){
+            $('#previous').attr('disabled','disabled');
+        }
+
+        function enableprevious(){
+            $('#previous').removeAttr('disabled');
+        }
+
+        function disablesave(){
+            $('#save').attr('disabled','disabled');
+        }
+
+        function enablesave(){
+            $('#save').removeAttr('disabled');
+        }
+
+        function disablesubmit(){
+            $('#submit').attr('disabled','disabled');
+        }
+
+        function enablesubmit(){
+            $('#submit').removeAttr('disabled');
+        }
+
+        function datasend(){
+            var json = JSON.stringify({"QuestionId":window.iod,"Answer":document.getElementById()});
+                $.get("/questions", {updateJson:json} ,function(data){
+                    //store data in local storage
+                    <!--window.location = "/result";-->
+                });
+        }
+
+        function savedata(i1){
+            var json = JSON.stringify({"QuestionId":window.iod,"Answer":document.getElementById(i1).value});
+                $.get("/questions", {updateJson:json} ,function(data){
+                    //store data in local storage
+                    <!--window.location = "/result";-->
+                });
+        }
+
+				function save(cd){
+					if(cd==0){
+					var w = $("#questionid").val();
+					var json = JSON.stringify({"QuestionId":w,"Answer":document.getElementById(i1).value});
+					$.get("/update", {updateJson:json}{ sessionId: getCookie("id"), updateJson:json } ,function(data){
+							//store data in local storage
+							result[w] =
+							nextfetchquestion(1);
+					});
+				}
+				else{
+
+				}
+				}
+
+    </script>
+
 	</head>
-    <body>
+    <body onload="getquestion()">
 		<div id="test"></div>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-8" id="quesPlane">
+                //////question dispaly
+								<div id="questionid"></div>
+                	<div id="question">
+			    	Questions dispalyed here
+					</div>
+					<div id="audiofile"></div>
+					<div id="videofile"></div>
+				    <button class="button" id="next" style="color:blue;margin-left:30px;" onclick="save()">Next</button>
+					<button class="button1" id="previous" onclick="nextfetchquestion(-1)">Previous</button>
                 </div>
                 <div class="col-md-4" id="sidePlane">
+					<div style="background=black;width=10px;height=100%;margin-left=800px"></div>
+                	<div id="createbutton"></div>
+                	<div id="countdown">countdown</div>
+					<button class="button2" id="save">Save</button>
+					<button class="button3" id="submit" onclick="Createbutton()">Submit</button>
+                /////button position
                 </div>
             </div>
         </div>
@@ -22,15 +493,14 @@
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			background-color:aqua;
 		}
         #quesPlane{
-            background-color: black;
 			height: 100%;
+			border-right: 1px solid #ccc;
         }
         #sidePlane{
-            background-color: blue;
 			height:100%;
+
         }
     </style>
 	<script>
@@ -39,4 +509,111 @@
 		$("body").height(th);
 
 	</script>
+
+
+<!--
+perfect working code executed in w3school
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo">How to create a JavaScript object array.</p>
+
+
+<script>
+var employees = [
+    {
+    "Expiry": 30,
+    "Question": [
+        {
+            "File": null,
+            "Description": "Find the matches in the following questions",
+            "SubQuestion": [
+                {
+                    "QuestionId": 1,
+                    "Question": "Test question",
+                    "Choice": [ "ans1", "ans2", "ans3", "ans4" ]
+                },
+                {
+                    "QuestionId": 2,
+                    "Question": "Test question2",
+                    "Choice": [ "ans1", "ans2", "ans3", "ans4" ]
+                }
+            ]
+        },
+        {
+            "File": "ascgerg.mp3",
+            "Description": "Answer the following questions from the audio",
+            "SubQuestion": [
+                {
+                    "QuestionId": 3,
+                    "Question": "Test question3",
+                    "Choice": null
+                },
+                {
+                    "QuestionId": 4,
+                    "Question": "Test question4",
+                    "Choice": [ "ans1", "ans2", "ans3", "ans4" ]
+                }
+            ]
+        }
+    ]
+}
+];
+function sample()
+{
+		for(var i=0;i<2;i++){
+					for(var j=0;j<employees[0].Question[i].SubQuestion.length;j++){
+						if(employees[0].Question[i].SubQuestion[j].QuestionId==5){
+		alert(employees[0].Question[i].SubQuestion[j].Question);
+        document.getElementById("demo").value=employees[0].Question[i].SubQuestion[j].Question;
+						}
+					}
+				}
+                }
+
+function addquestion(aq){
+			alert(aq.Question);
+            $("#question").load(aq.QuestionId);
+            if(aq.choice!=null)
+            $("#question1").load(aq.choice);
+        }
+</script>
+<p id="question"></p>
+<p id="question"></p>
+<button id="question1" onclick="sample()">asdsa</button>
+</body>
+</html>
+
+
+if(checksessionid){
+        		text = localStorage.getItem("JSONQuestion");
+				obj = JSON.parse(text);
+				for(var i=0;i<window.noquestion;i++){
+					if(obj[0].Question[window.iod].SubQuestion[window.iod].Question!=null){
+						addquestion(obj[window.iod].Question[window.iod].SubQuestion[window.iod].Question);
+					}
+					if(obj[window.iod].Question[window.iod].File!=null){
+						var a1=obj[window.iod].Question[window.iod].File;
+						var n=a1.length;
+						if(a1.substring(n-3, n)=="mp3"){
+							//audio
+							addaudiofile(a1);
+						}
+						else if(a1.substring(n-3, n)=="mp4"){
+							//video
+							addvideofile(a1);
+						}
+					}
+
+					if(obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice!=null){
+					    addchoice(obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice[i]);
+					}
+					if(obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice==null){
+	                    ///fill in the blank
+					}
+				}
+        	}
+
+-->
 </html>
