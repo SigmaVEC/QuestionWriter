@@ -15,11 +15,9 @@
         border-radius: 5px;
         font-size: 0;
       }
-
       #form div {
-                  background-color: lightgrey;
+                  background-color: lightblue;
           }
-
       #form div label {
         display: block;
         padding: 20px 20px 10px;
@@ -30,7 +28,6 @@
         color: #939393;
         cursor: pointer;
       }
-
       #form div label input {
         display: inline-block;
         position: relative;
@@ -48,25 +45,19 @@
         opacity: .6;
         transition: all linear .3s;
       }
-
       @media(min-width: 800px){
         #form div { display: inline-block; }
         .col-submit { display: block; }
-
         .col-2, .col-3, .col-4 { box-shadow: 1px 1px #e4e4e4; border: none; }
-
         .col-2 { width: 50% }
         .col-3 { width: 33.3333333333% }
         .col-4 { width: 50% }
-
         .col-submit { width: 100%; margin: 0 auto; }
       }
-
       .col-2, .col-3, .col-4 {
         box-shadow: 1px 1px #e4e4e4;
         border-bottom: 1px solid #e4e4e4;
       }
-
       .col-submit {
         text-align: center;
         padding: 20px;
@@ -90,26 +81,23 @@
   box-shadow:8px 8px 8px gray;
   margin:10px;
       }
-
       .submitbtn:active{
   background-color:blue;
 position:relative;
   top:8px;
   left:8px;
-
 }
-
       div button:hover, div button:focus {
           box-shadow: 10px 10px 5px #888888;
       }
-
       label input:focus {
         opacity: 1;
       }
     </style>
     <script>
-    function s(){
-    $('#button').prop('disabled', true);}
+    function checksession(){
+        <!--$('#button').prop('disabled', true);-->
+    }
     function check(){
     var fields = ["name", "registernumber", "branch", "year", "semester", "collegename", "academicyear"], i, focus=1;
         for(i=0; i<fields.length; i++){
@@ -148,7 +136,7 @@ position:relative;
     }
 </script>
 </head>
-<body onload="s()">
+<body onload="checksession()">
 <div id="form">
     <div class="col-2">
         <label>
