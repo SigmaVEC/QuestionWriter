@@ -340,13 +340,12 @@
 								var n = a1.length;
 								if(a1.substring(n-3, n)=="mp3"){
 									//audio
-									$("#audiofile").src=a1;
+									$("#audiofile").html('<audio width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');;
 								}
 								else if(a1.substring(n-3, n)=="mp4"){
 									//video
 									// $("#filevideo").append(window.question[0].Question[i].File);
-									///need to add a1 variable instead a.mp4
-									$("#div1").html('<video width="640" height="264" controls>' + '<source src="a.mp4" type="video/mp4"></source>'+'</video>');
+									$("#videofile").html('<video width="640" height="264" controls>' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
 
 								}
             					$("#description").text(window.question[0].Question[i].Description);
