@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"io"
 	"errors"
+	"strconv"
 )
 
 var (
@@ -27,8 +28,8 @@ type RegisterRequest struct {
 	Name string
 	AcademicYear int
 	Branch string
+	Year int
 	Semester int
-	CollegeName string
 }
 
 type RegisterResponse struct {
@@ -57,6 +58,18 @@ type QuestionListResponse struct {
 	Question []QuestionModel
 }
 
+type SubQuestionResultModel struct {
+	QuestionId int
+	Question string
+	Answer string
+	CorrectAnswer string
+	Reason string
+}
+
+type ResultAnalysisResponse struct {
+	SubQuestion []SubQuestionResultModel
+}
+
 func getQuestion(question string, data QuestionListResponse) (int, error) {
 	for i := 0; i < len(data.Question); i++ {
 		if data.Question[i].Description == question {
@@ -72,10 +85,9 @@ func generateSubQuestion(questionId int, subQuestion string) (SubQuestionModel, 
 	dbChoices, err := db.Query("SELECT Choice FROM Choices WHERE QuestionId=?", questionId)
 	defer dbChoices.Close()
 
-	subQuestionObject.QuestionId = questionId
-	subQuestionObject.Question = subQuestion
-
 	if err == nil {
+		subQuestionObject.QuestionId = questionId
+		subQuestionObject.Question = subQuestion
 		hasChoices := false
 
 		for dbChoices.Next() {
@@ -104,7 +116,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "Register.html")
 }
 
-func dashBoardHandler(w http.ResponseWriter, r *http.Request) {
+func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "dashboard.html")
 }
 
@@ -121,7 +133,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Branch, student.Semester, student.CollegeName)
+			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Branch, student.Year, student.Semester)
 
 			if err == nil {
 				json.NewEncoder(w).Encode(reply)
@@ -237,6 +249,33 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 	}
 }
 
+func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := r.FormValue("sessionId")
+	questionId := r.FormValue("questionId")
+	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
+	err := dbSession.Scan(&sessionId)
+
+	if err == nil && len(sessionId) != 0 {
+		question, err := strconv.ParseInt(questionId, 10, 32)
+
+		if err == nil {
+			var answer string
+			row := db.QueryRow("SELECT Answer FROM StudentAnswers WHERE SessionId=? AND QuestionId=?", sessionId, question)
+			err = row.Scan(&answer)
+
+			if err == nil {
+				json.NewEncoder(w).Encode(QuestionUpdateRequest{QuestionId: question, Answer: answer})
+			} else {
+				io.WriteString(w, emptyJson)
+			}
+		} else {
+			io.WriteString(w, emptyJson)
+		}
+	} else {
+		io.WriteString(w, emptyJson)
+	}
+}
+
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	//TODO: Logout Handler
 }
@@ -250,10 +289,11 @@ func main() {
 		fs := http.FileServer(http.Dir("./static"))
 		http.Handle("/", fs)
 		http.HandleFunc("/register", registerHandler)
-		http.HandleFunc("/dashboard", dashBoardHandler)
+		http.HandleFunc("/dashboard", dashboardHandler)
 		http.HandleFunc("/login", loginHandler)
 		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/update", updateQuestionHandler)
+		http.HandleFunc("/getanswer", getAnswerHandler)
 		http.HandleFunc("/logout", logoutHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
