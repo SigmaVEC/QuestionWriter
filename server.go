@@ -104,6 +104,10 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "Register.html")
 }
 
+func dashBoardHandler(w http.ResponseWriter, r *http.Request) {
+	displayWebPage(w, "dashboard.html")
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	studentJson := r.FormValue("studentJson")
 	data := []byte(studentJson)
@@ -246,6 +250,7 @@ func main() {
 		fs := http.FileServer(http.Dir("./static"))
 		http.Handle("/", fs)
 		http.HandleFunc("/register", registerHandler)
+		http.HandleFunc("/dashboard", dashBoardHandler)
 		http.HandleFunc("/login", loginHandler)
 		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/update", updateQuestionHandler)
