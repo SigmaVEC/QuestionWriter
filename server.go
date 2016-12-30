@@ -9,6 +9,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io"
+	"errors"
 )
 
 var (
@@ -63,7 +64,7 @@ func getQuestion(question string, data QuestionListResponse) (int, error) {
 		}
 	}
 
-	return -1, error.Error("not found")
+	return -1, errors.New("not found")
 }
 
 func generateSubQuestion(questionId int, subQuestion string) (SubQuestionModel, error) {
@@ -75,19 +76,22 @@ func generateSubQuestion(questionId int, subQuestion string) (SubQuestionModel, 
 	subQuestionObject.Question = subQuestion
 
 	if err == nil {
-		if len(dbChoices) != 0 {
-			for dbChoices.Next() {
-				var choice string
-				dbChoices.Scan(&choice)
-				subQuestionObject.Choice = append(subQuestionObject.Choice, choice)
-			}
-		} else {
+		hasChoices := false
+
+		for dbChoices.Next() {
+			hasChoices = true
+			var choice string
+			dbChoices.Scan(&choice)
+			subQuestionObject.Choice = append(subQuestionObject.Choice, choice)
+		}
+
+		if hasChoices == false {
 			subQuestionObject.Choice = nil
 		}
 
 		return subQuestionObject, nil
 	} else {
-		return nil, err
+		return subQuestionObject, err
 	}
 }
 
@@ -137,7 +141,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions");
 		defer dbQuestions.Close()
 
-		if err == nil && len(dbQuestions) != 0 {
+		if err == nil {
 			var reply QuestionListResponse
 			reply.Expiry = sessionExpiry
 

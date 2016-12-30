@@ -104,9 +104,51 @@
   top:508px;
   left:1108px;
 }
+#countdown {
+    color: #1B232F;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
     </style>
     <script>
+//////////////////////////////////
+    function countdown( elementName, minutes, seconds )
+{
+    var element, endTime, hours, mins, msLeft, time;
+
+    function twoDigits( n )
+    {
+        return (n <= 9 ? "0" + n : n);
+    }
+
+    function updateTimer()
+    {
+        msLeft = endTime - (+new Date);
+        if ( msLeft < 1000 ) {
+            element.innerHTML = "countdown's over!";
+        } else {
+            time = new Date( msLeft );
+            hours = time.getUTCHours();
+            mins = time.getUTCMinutes();
+            element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+            setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+        }
+    }
+
+    element = document.getElementById( elementName );
+    endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+    updateTimer();
+}
+
+countdown( "countdown", 30, 0 );
+////////////////////////////////////
     var iod=0;
+    var a=setTimeout(time,1000);
+    function time(){
+    	docum
+    }
         function checksessionid(){
         	var sessi = getCookie("id");
                     if(sessi.length<69){
@@ -273,6 +315,7 @@
     <source src="a.mp4" type="video/mp4"/>
     </video>
 </div>
+<div id="countdown"></div>
 <div id="option">
     options
 </div>
