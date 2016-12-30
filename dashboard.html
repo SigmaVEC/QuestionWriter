@@ -463,7 +463,7 @@
                       a = 3;
                     }
 					var json = JSON.stringify({"QuestionId":w,"Answer":document.getElementById(i1).value});
-					$.get("/update", {updateJson:json}{ sessionId: getCookie("id"), updateJson:json } ,function(data){
+					$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
 							//store data in local storage
 							window.result[w] = a;
 					});
