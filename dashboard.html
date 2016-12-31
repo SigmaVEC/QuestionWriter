@@ -149,7 +149,7 @@
     </style>
 
     <script>
-	var noquestion, questions, presentquestion, buttonnum, fillorchoice, currentid=0, answer;
+	var noquestion, questions, presentquestion, buttonnum, fillorchoice, currentid=0, answer, maxid=0;
 	var result = [];
 	var iod=0;
 	$(document).ready(function(){
@@ -344,6 +344,9 @@
         	var text, obj;
 					if(arguments[0]==1){
 						window.currentid+=1;
+						if(window.maxid<window.currentid){
+								window.maxid=window.currentid;
+						}
 					}
 					else{
 						window.currentid-=1;
@@ -385,6 +388,10 @@
 										prefetchquestion();
 										enablenext();
 										}
+										if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+										prefetchquestion();
+										enablenext();
+										}
 									}
 									else{
 									    window.fillorchoice="choice";
@@ -400,6 +407,10 @@
 											}
 											disablenext();
 											if(arguments[0]==-1){
+											prefetchquestion();
+											enablenext();
+											}
+											if((arguments[0]==1)&&(window.currentid<=window.maxid)){
 											prefetchquestion();
 											enablenext();
 											}
@@ -437,6 +448,10 @@
 										prefetchquestion();
 										enablenext();
 										}
+										if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+										prefetchquestion();
+										enablenext();
+										}
 									}
 									else{
 									window.fillorchoice="choice";
@@ -453,6 +468,10 @@
 									}
 									disablenext();
 									if(arguments[0]==-1){
+									prefetchquestion();
+									enablenext();
+									}
+									if((arguments[0]==1)&&(window.currentid<=window.maxid)){
 									prefetchquestion();
 									enablenext();
 									}
