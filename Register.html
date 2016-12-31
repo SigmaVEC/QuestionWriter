@@ -49,7 +49,7 @@
     }
     function getsessionid(){
         var studentdetails = JSON.stringify({"Name":document.getElementById("first_name").value,
-        "RegisterNumber":document.getElementById("last_name").value,
+        "RegisterNumber":parseInt(document.getElementById("last_name").value),
         "Department":document.getElementById("display_name").value,
         "AcademicYear":parseInt(document.getElementById("email").value),
         "Year":parseInt(document.getElementById("password").value),
