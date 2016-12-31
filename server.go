@@ -25,11 +25,11 @@ var (
 
 type RegisterRequest struct {
 	RegisterNumber string
-	Name string
-	AcademicYear int
-	Branch string
-	Year int
-	Semester int
+	Name           string
+	AcademicYear   int
+	Department     string
+	Year           int
+	Semester       int
 }
 
 type RegisterResponse struct {
@@ -38,32 +38,32 @@ type RegisterResponse struct {
 
 type QuestionUpdateRequest struct {
 	QuestionId int
-	Answer string
+	Answer     string
 }
 
 type SubQuestionModel struct {
 	QuestionId int
-	Question string
-	Choice []string
+	Question   string
+	Choice []  string
 }
 
 type QuestionModel struct {
-	File string
+	File        string
 	Description string
 	SubQuestion []SubQuestionModel
 }
 
 type QuestionListResponse struct {
-	Expiry int
+	Expiry   int
 	Question []QuestionModel
 }
 
 type SubQuestionResultModel struct {
-	QuestionId int
-	Question string
-	Answer string
+	QuestionId    int
+	Question      string
+	Answer        string
 	CorrectAnswer string
-	Reason string
+	Reason        string
 }
 
 type ResultAnalysisResponse struct {
@@ -137,7 +137,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Branch, student.Year, student.Semester)
+			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester)
 
 			if err == nil {
 				json.NewEncoder(w).Encode(reply)
