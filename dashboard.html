@@ -135,6 +135,7 @@
     text-decoration: none;
     color: #1B232F;
     position: absolute;
+    text-align: center;
   top:450px;
   left:200px;
   width:100px;
@@ -152,10 +153,9 @@
 	var noquestion, questions, presentquestion, buttonnum, fillorchoice;
 	var result = [];
 	var iod=0;
-    function countdown( elementName, minutes, seconds )
+    function Countdown( elementName, minutes, seconds )
 {
     var element, endTime, hours, mins, msLeft, time;
-    element = document.getElementById( elementName );
 
     function twoDigits( n )
     {
@@ -166,22 +166,22 @@
     {
         msLeft = endTime - (+new Date);
         if ( msLeft < 1000 ) {
-            element.innerHTML = "countdown's over!";
+            $("#countdown").html("countdown's over!");
         } else {
             time = new Date( msLeft );
             hours = time.getUTCHours();
             mins = time.getUTCMinutes();
-            element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+            $("#countdown").html((hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() ));
+            //element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
             setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
         }
     }
 
-    element = document.getElementById( elementName );
     endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
     updateTimer();
 }
 
-countdown( "countdown", 1, 5 );
+Countdown( "countdown", 30, 5 );
 ////////////////////////////////////
         function checksessionid(){
         	var sessi = getCookie("id");
@@ -197,7 +197,7 @@ countdown( "countdown", 1, 5 );
         function getCookie(cname) {
 		    var name = cname + "=";
 		    var ca = document.cookie.split(';');
-		        var c = ca[i];
+		        var c = ca[0];
 		        var c1 = c.split('=');
 		        if(c1.length<69)
 		        	return "";
@@ -526,7 +526,7 @@ countdown( "countdown", 1, 5 );
                 <div class="col-md-4" id="sidePlane">
                     <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
                 	<div id="createbutton" ></div>
-                	<div id="countdown"></div>
+                	<div id="countdown" class="rect1">asdsa</div>
 					<button class="btn btn-primary" id="submit" onclick="save(1)">Submit</button>
                 </div>
             </div>
