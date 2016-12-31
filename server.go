@@ -11,7 +11,6 @@ import (
 	"io"
 	"errors"
 	"strconv"
-	"fmt"
 )
 
 var (
@@ -159,7 +158,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	fmt.Print(sessionId)
 	err := dbSession.Scan(&sessionId)
 
 	if err == nil && len(sessionId) != 0 {
@@ -202,7 +200,6 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 			io.WriteString(w, emptyJson)
 		}
 	} else {
-		fmt.Print("a");
 		io.WriteString(w, emptyJson)
 	}
 }
