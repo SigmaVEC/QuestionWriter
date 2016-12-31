@@ -31,8 +31,24 @@
   } );
   </script>
     <script>
-    function checksession(){
+    function checksessionid(){
+      var sessi = getCookie("id");
+                if(sessi.length>69){
+                  // return false;
+                  window.location = "/register";
+                }
+                else {
+                  // return true;
+                  window.location = "/dashboard";
+                }
     }
+    function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+        var c = ca[0];
+        var c1 = c.split('=');
+        return c1[1]+"=";
+}
     function check(){
     var fields = ["first_name", "last_name", "display_name", "email", "password", "password_confirmation"], i, focus=1;
         for(i=0; i<fields.length; i++){
@@ -72,7 +88,7 @@
     }
 </script>
 </head>
-<body style="background-color:#E6E6FA;">
+<body style="background-color:#E6E6FA;" onunload="checksessionid()">
 <div class="container">
 
     <div class="row">

@@ -1,10 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="js/jquerymin.js"></script>
+  <script src="js/jquery.js"></script>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+    function myFunction() {
+        window.print();
+    }
+
+    var monthNames = [ "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December" ];
+var dayNames= ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+
+var newDate = new Date();
+newDate.setDate(newDate.getDate() + 1);
+$('#Date').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+    // function getdate(){
+      // var d = new Date();
+      // $("#date").html('Date:'+d.getDate()+'/'+d.getDay()+1+'/'+d.getFullYear());
+    // }
+fetchanswer();
+studentdetails();
+    function fetchanswer(){
+      // $("div").hide();
+      var text, obj;
+    for(var i=0;i<window.noquestion;i++){
+      for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
+            $("#a").append("<div>"+window.question.Question[i].Description+"</div>");
+            $("#a").append("<div>"+window.question.Question[i].SubQuestion[j].QuestionId+"</div>");
+            $("#a").append("<div>"+window.question.Question[i].SubQuestion[j].Question+"</div>");
+              if(window.question.Question[i].SubQuestion[j].Choice==null){
+                //$("#fillintheblank").text("fill the field");
+                $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
+              }
+              else{
+                  var cl = window.question.Question[i].SubQuestion[j].Choice.length;
+                  for(var k=0;k<cl;k++){
+                      $("#a"+k).append('a:' + window.question.Question[i].SubQuestion[j].Choice[k]+'     ');
+                  }
+                  $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                  $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                  $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
+              }
+          }
+        }
+      }
+
+      function studentdetails(){
+
+
+      }
+
+    </script>
+    <style>
+    #but{
+      position:fixed;
+      top:550px;
+      left:800px;
+    }
+#semestser{
+  position:fixed;
+  top: 100px; /*[wherever you want it]*/
+  left:500px; /*[wherever you want it]*/
+}
+#branch{
+  position:fixed;
+  top: 100px; /*[wherever you want it]*/
+  left:300px; /*[wherever you want it]*/
+}
+
+    </style>
 </head>
 <body>
-//retrive data from local storage
+<!-- <object width=100% height=570 data="mozilla.pdf">
+</object> -->
+<div align="center">GE6674 & COMMUNICATION SKILLS LABORATORY</div>
+<div align="center">LAB RECORD</div>
+<div align="center">LAB SESSION</div>
+<div align="left" id="Date">sdsa</div>
+<div align="right" id="time">sada</div>
+<div align="left" id="sname">asdsa</div>
+<div align="left" id="snumber">sad</div>
+<div align="left" id="year">asdsa</div>
+<div align="right" id="semester"></div>
+<div align="right" id="branch">dgsdf</div>
+<div align="right" id="section">asds</div>
+<div align="left" id="totalmarks">asdfsa</div>
+<div align="right" id="smark">asdasd</div>
+<hr>
+<div id="a" >asdsa</div>
+<div id="sanswer">asdsad</div>
+<div id="canswer">asdsa</div>
+<div id="explain">asdsad</div>
+<div align="left" id="date">sadsa</div>
+<div align="right" id="facultyincharge">FACUKTY-IN-CHARGE</div>
+<button id="but" onclick="myFunction()">Print this page</button>
 </body>
 </html>
