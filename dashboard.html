@@ -208,10 +208,9 @@ Countdown( "countdown", 30, 5 );
         // $(document).ready(function(){
             // $("#next").click(function(){ //////////////////////////////////////////////////
             	function getquestion(){
-	            	var sessi = getCookie("id");
-	            	var session = JSON.stringify({"SessionId":sessi});
-								if(session>68){
-	                $.get("/questions", {studentJson: session} ,function(data){
+	            	var session = getCookie("id");
+
+	                $.get("/questions", {sessionId: session} ,function(data){
 	                	window.question = JSON.parse(data);
 	                	window.noquestion = window.question[0].Question[employees[0].Question.length-1].SubQuestion[employees[0].Question[employees[0].Question.length-1].SubQuestion.length-1].QuestionId;
 	                	Createbutton(window.noquestion);
@@ -220,11 +219,6 @@ Countdown( "countdown", 30, 5 );
 											disableprevious();
 											disablenext();
 	                });
-	            }
-							else{
-								alert("Times Up On Load");
-							}
-						}
             // });
         // });
 

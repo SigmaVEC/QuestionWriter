@@ -11,6 +11,7 @@ import (
 	"io"
 	"errors"
 	"strconv"
+	"fmt"
 )
 
 var (
@@ -18,8 +19,8 @@ var (
 	sessionExpiry = 30 //In minutes
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "root"
-	password string = "toor"
+	user string = "test"
+	password string = "test"
 	database string = "QuestionWriter"
 )
 
@@ -142,12 +143,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				json.NewEncoder(w).Encode(reply)
 			} else {
+				fmt.Print(err)
 				io.WriteString(w, emptyJson)
 			}
 		} else {
+			fmt.Print("b")
 			io.WriteString(w, emptyJson)
 		}
 	} else {
+		fmt.Print("a")
 		io.WriteString(w, emptyJson)
 	}
 }
