@@ -70,6 +70,23 @@ type ResultAnalysisResponse struct {
 	SubQuestion []SubQuestionResultModel
 }
 
+func displayWebPage(w http.ResponseWriter, file string) {
+	t, _ := template.ParseFiles(file)
+	t.Execute(w, nil)
+}
+
+func registerHandler(w http.ResponseWriter, r *http.Request) {
+	displayWebPage(w, "Register.html")
+}
+
+func dashboardHandler(w http.ResponseWriter, r *http.Request) {
+	displayWebPage(w, "dashboard.html")
+}
+
+func resultsHandler(w http.ResponseWriter, r *http.Request) {
+	displayWebPage(w, "Result.html")
+}
+
 func getQuestion(question string, data QuestionListResponse) (int, error) {
 	for i := 0; i < len(data.Question); i++ {
 		if data.Question[i].Description == question {
@@ -105,19 +122,6 @@ func generateSubQuestion(questionId int, subQuestion string) (SubQuestionModel, 
 	} else {
 		return subQuestionObject, err
 	}
-}
-
-func displayWebPage(w http.ResponseWriter, file string) {
-	t, _ := template.ParseFiles(file)
-	t.Execute(w, nil)
-}
-
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	displayWebPage(w, "Register.html")
-}
-
-func dashboardHandler(w http.ResponseWriter, r *http.Request) {
-	displayWebPage(w, "dashboard.html")
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -276,7 +280,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func resultsHandler(w http.ResponseWriter, r *http.Request) {
+func reportHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
 	err := dbSession.Scan(&sessionId)
@@ -319,11 +323,12 @@ func main() {
 		http.Handle("/", fs)
 		http.HandleFunc("/register", registerHandler)
 		http.HandleFunc("/dashboard", dashboardHandler)
+		http.HandleFunc("/results", resultsHandler)
 		http.HandleFunc("/login", loginHandler)
 		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/update", updateQuestionHandler)
 		http.HandleFunc("/getanswer", getAnswerHandler)
-		http.HandleFunc("/results", resultsHandler)
+		http.HandleFunc("/report", reportHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
 		panic(dbErr)
