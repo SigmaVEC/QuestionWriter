@@ -23,8 +23,31 @@ $('#Date').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + mon
     // }
 fetchanswer();
 studentdetails();
+function checksessionid(){
+  var sessi = getCookie("id");
+            if(sessi.length>69){
+              return false;
+            }
+            else {
+              return true;
+            }
+}
+function getCookie(cname) {
+var name = cname + "=";
+var ca = document.cookie.split(';');
+    var c = ca[0];
+    var c1 = c.split('=');
+    return c1[1]+"=";
+}
     function fetchanswer(){
       // $("div").hide();
+      var ssession = getCookie("id");
+      var n = ssession.length;
+      // alert(ssession.substring(8, n));
+      var session = ssession.substring(8, n);
+      $.get("/report", {sessionId: session} ,function(data){
+        window.question = JSON.parse(data);
+      });
       var text, obj;
     for(var i=0;i<window.noquestion;i++){
       for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){

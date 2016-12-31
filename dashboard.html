@@ -149,7 +149,7 @@
     </style>
 
     <script>
-	var noquestion, questions, presentquestion, buttonnum, fillorchoice, currentid=0, answer, maxid=0;
+	var noquestion, questions, presentquestion, buttonnum, fillorchoice, currentid=0, answer, maxid=1;
 	var result = [];
 	var iod=0;
 	$(document).ready(function(){
@@ -328,19 +328,20 @@
 
 				function prefetchquestion(){
 
-					$.get("/getanswer",{ sessionId: getCookie("id"), questionId:window.currentid } ,function(data){
+					// $.get("/getanswer",{ sessionId: getCookie("id"), questionId:window.currentid } ,function(data){
 							//store data in local storage
 							window.answer = window.result[window.currentid];
-							// alert(window.answer);
-							// $("#"+window.answer+"choice").prop("checked", "checked");
-							$('input:radio[name=choice]')[window.answer].checked = true;
-							// window.question = JSON.parse(data);
-							// alert(window.result[w]+w);
-					});
+							if(window.fillorchoice=="fill"){
+								// $('input:text[name=fill1]')[window.answer].value = window.answer;
+								$('#fill11').val(window.answer);
+							}else{
+								$('input:radio[name=choice]')[window.answer].checked = true;
+							}
 				}
 
         function nextfetchquestion(){
 					// $("div").hide();
+					disablenext();
         	var text, obj;
 					if(arguments[0]==1){
 						window.currentid+=1;
@@ -381,14 +382,13 @@
 								$("#question").text(window.question.Question[i].SubQuestion[j].Question);
 									if(window.question.Question[i].SubQuestion[j].Choice==null){
 										//$("#fillintheblank").text("fill the field");
-										$("#fillintheblank").html('<input type="text" id="fill" onclick="enable()"></input>');
+										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
 										window.fillorchoice="fill";
-										disablenext();
 										if(arguments[0]==-1){
 										prefetchquestion();
 										enablenext();
 										}
-										if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+										if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
 										prefetchquestion();
 										enablenext();
 										}
@@ -405,14 +405,14 @@
 											else{
 												$("#choice3").show();
 											}
-											disablenext();
+											// disablenext();
 											if(arguments[0]==-1){
 											prefetchquestion();
 											enablenext();
 											}
-											if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+											if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
 											prefetchquestion();
-											enablenext();
+											// enablenext();
 											}
 										// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
 										// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
@@ -441,21 +441,21 @@
             					$("#question").text(window.question.Question[i].SubQuestion[j].QuestionId+':'+window.question.Question[i].SubQuestion[j].Question);
             					if(window.question.Question[i].SubQuestion[j].Choice==null){
 										//$("#fillintheblank").text("fill the field");
-										$("#fillintheblank").html('<input type="text" id="fill" onclick="enable()"></input>');
+										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
 										window.fillorchoice="fill";
-										disablenext();
+										// disablenext();
 										if(arguments[0]==-1){
 										prefetchquestion();
 										enablenext();
 										}
-										if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+										if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
 										prefetchquestion();
 										enablenext();
 										}
 									}
 									else{
 									window.fillorchoice="choice";
-									disablenext();
+									// disablenext();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 									for(var k=0;k<cl;k++){
 											$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</input>');
@@ -466,12 +466,13 @@
 									else{
 										$("#choice3").show();
 									}
-									disablenext();
+									// disablenext();
 									if(arguments[0]==-1){
 									prefetchquestion();
 									enablenext();
 									}
-									if((arguments[0]==1)&&(window.currentid<=window.maxid)){
+									if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
+										alert(window.currentid+"<="+window.maxid);
 									prefetchquestion();
 									enablenext();
 									}
@@ -488,7 +489,7 @@
 						// alert("nothing");
 					}
 					break;
-					enablenext();
+					// enablenext();
 				}
 			}
 			else{
@@ -567,7 +568,7 @@
 					var a;
 
 					if(window.fillorchoice == "fill"){
-							a=$("#fill").val();
+							a=$("#fill11").val();
 					}
 					else {
               a = $('input:radio[name=choice]:checked').val();
@@ -600,6 +601,11 @@
 						else if(arguments[0]==2){
 				        //submit button
 				        alert("End");
+								// enablesubmit();
+				    }
+						if(arguments[0]==3){
+				        //submit button
+				        nextfetchquestion(-1);
 								// enablesubmit();
 				    }
 				    // else if(arguments[0]==2){
@@ -647,7 +653,7 @@
                         <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
 				    <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
-					<button class="btn btn-primary" id="previous" onclick="nextfetchquestion(-1)">Previous</button>
+					<button class="btn btn-primary" id="previous" onclick="save(3)">Previous</button>
                 </div>
                 <div class="col-md-4" id="sidePlane">
                     <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
