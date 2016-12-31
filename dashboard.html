@@ -149,10 +149,12 @@
     </style>
 
     <script>
-//////////////////////////////////
 	var noquestion, questions, presentquestion, buttonnum, fillorchoice;
 	var result = [];
 	var iod=0;
+	$(document).ready(function(){
+	getquestion();
+		 });
     function Countdown( elementName, minutes, seconds )
 {
     var element, endTime, hours, mins, msLeft, time;
@@ -181,16 +183,15 @@
     updateTimer();
 }
 
-Countdown( "countdown", 30, 5 );
+// Countdown( "countdown", 30, 5 );
 ////////////////////////////////////
         function checksessionid(){
         	var sessi = getCookie("id");
                     if(sessi.length<69){
                     	return false;
-                    // disableprevious();
+                    disable();
                     }
                     else {
-                    	getquestion();
                     	return true;
                     }
         }
@@ -205,29 +206,19 @@ Countdown( "countdown", 30, 5 );
 		        else
 		        	return c1[1];
 		}
-
-        // $(document).ready(function(){
-            // $("#next").click(function(){ //////////////////////////////////////////////////
-            	function getquestion(){
-	            	var session = getCookie("id");
-
-	                $.get("/questions", {sessionId: session} ,function(data){
-	                	window.question = JSON.parse(data);
-	                	window.noquestion = window.question[0].Question[employees[0].Question.length-1].SubQuestion[employees[0].Question[employees[0].Question.length-1].SubQuestion.length-1].QuestionId;
-	                	Createbutton(window.noquestion);
-										countdown( "countdown", window.questions[0].Expiry, 0);
-	                                    fetchquestion(0);
-											disableprevious();
-											disablenext();
-	                });
-            // });
-        // });
-
-        //function Createbutton(cb){
-        //	for(var i=0; i<obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice.length;i++){
-          //      $('#createbutton').append('<button class="button2" id="button1"'+ i +' onclick="fetchquestion('+i+');savedata(i)"/><br>');
-            //}
-        //}
+						function getquestion(){
+							var session = getCookie("id");
+									// alert("sds");
+								$.get("/questions", {sessionId: session} ,function(data){
+									window.question = JSON.parse(data);
+									window.noquestion = window.question[0].Question[employees[0].Question.length-1].SubQuestion[employees[0].Question[employees[0].Question.length-1].SubQuestion.length-1].QuestionId;
+									Createbutton(window.noquestion);
+									countdown( "countdown", window.questions[0].Expiry, 0);
+										nextfetchquestion(0);
+										disableprevious();
+										disablenext();
+								});
+							}
 
 		function Createbutton(){
         	for(var i=1; i<=window.noquestion;i++){
@@ -256,8 +247,8 @@ Countdown( "countdown", 30, 5 );
 	            enableprevious();
 	        }
         	//$("div").remove();//////have to change
-        	if(checksessionid){
-				for(var i=0;i<window.noquestion;i++){
+        	if(checksessionid()){
+				  for(var i=0;i<window.noquestion;i++){
 					for(var j=0;j<window.question[0].Question[i].SubQuestion.length;j++){
 						if(window.question[0].Question[i].SubQuestion[j].QuestionId==jumpnop){
 							//addquestion("window.question[0].Question["+i+"].SubQuestion["+j+"]");
@@ -411,6 +402,12 @@ Countdown( "countdown", 30, 5 );
 					enableprevious();
 					enablesubmit();
 				}
+				function disable(){
+					disablenext();
+					disableprevious();
+					disablesubmit();
+					save(-1);
+				}
 
         function disablenext(){
             // $('#next').attr('disabled','disabled');
@@ -493,7 +490,7 @@ Countdown( "countdown", 30, 5 );
     </script>
 
 	</head>
-    <body  onload="getquestion()">
+    <body>
 		<div id="test"></div>
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
@@ -508,13 +505,22 @@ Countdown( "countdown", 30, 5 );
 										<div id="audiofile"></div>
 										<div id="videofile"></div>
                     <div id="description"></div>
-                    <div id="questionid"></div>
-                    <div id="question"></div>
+                    <div id="questionid">1:</div>
+                    <div id="question">Lethargy</div>
                     <div id="fillintheblank"></div>
-                    <div id="choice0"></div>
-                    <div id="choice1"></div>
-                    <div id="choice2"></div>
-                    <div id="choice3"></div>
+                    <div id="choice0">
+                        <input type="radio" name="gender" value="male" checked> sada<br>
+                    </div><br>
+                    <div id="choice1">
+                        <input type="radio" name="gender" value="male" checked> sada<br>
+                        <!--<input type="radio">sads<input>-->
+                    </div><br>
+                    <div id="choice2">
+                        <input type="radio" name="gender" value="male" checked> sada<br>
+                    </div><br>
+                    <div id="choice3">
+                        <input type="radio" name="gender" value="male" checked> sada<br>
+                    </div><br>
 				    <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
 					<button class="btn btn-primary" id="previous" onclick="nextfetchquestion(-1)">Previous</button>
                 </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <script src="js/jquerymin.js"></script>
@@ -153,7 +153,7 @@
     {
         msLeft = endTime - (+new Date);
         if ( msLeft < 1000 ) {
-            element.innerHTML = "countdown's over!";
+            $("countdown").text = "countdown's over!";
 						/////
 						disablenext();
 						disableprevious();
@@ -163,7 +163,7 @@
             time = new Date( msLeft );
             hours = time.getUTCHours();
             mins = time.getUTCMinutes();
-            element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+            $("countdown").text = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
             setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
         }
     }
@@ -220,14 +220,10 @@
             // });
         // });
 
-        //function Createbutton(cb){
-        //	for(var i=0; i<obj[window.iod].Question[window.iod].SubQuestion[window.iod].Choice.length;i++){
-          //      $('#createbutton').append('<button class="button2" id="button1"'+ i +' onclick="fetchquestion('+i+');savedata(i)"/><br>');
-            //}
-        //}
+
 
 		function Createbutton(){
-        	for(var i=1; i<=window.noquestion;i++){
+        	for(var i=1; i<=(window.noquestion);i++){
           		var dynamicbutton= $('<input/>').attr({ id: 'button'+i, type: 'button', name: 'btn'+i, value: i});
           		$("#createbutton").append(dynamicbutton);
           	}
@@ -613,4 +609,4 @@ if(checksessionid){
         	}
 
 -->
-</html>
+</html> -->
