@@ -52,7 +52,7 @@
         "RegisterNumber":document.getElementById("last_name").value,
         "Department":document.getElementById("display_name").value,
         "AcademicYear":parseInt(document.getElementById("email").value),
-        "Year":document.getElementById("password").value,
+        "Year":parseInt(document.getElementById("password").value),
         "Semester":parseInt(document.getElementById("password_confirmation").value)
         });
         $.get("/login", { studentJson: studentdetails }, function(result){
