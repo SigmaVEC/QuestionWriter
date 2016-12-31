@@ -256,7 +256,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	err := dbSession.Scan(&sessionId)
 
 	if err == nil && len(sessionId) != 0 {
-		question, err := strconv.ParseInt(questionId, 10, 32)
+		question, err := strconv.Atoi(questionId)
 
 		if err == nil {
 			var answer string
@@ -276,8 +276,37 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	//TODO: Logout Handler
+func resultsHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := r.FormValue("sessionId")
+	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
+	err := dbSession.Scan(&sessionId)
+
+	if err == nil && len(sessionId) != 0 {
+		var questionLength int
+		row := db.QueryRow("SELECT MAX(QuestionId) FROM Questions")
+		err = row.Scan(&questionLength)
+
+		if err == nil {
+			var subQuestionArray []SubQuestionResultModel
+			for i := 1; i <= questionLength; i++ {
+				var subQuestion, answer, reason string
+				row = db.QueryRow("SELECT SubQuestion, Answer, AnswerReason FROM Questions WHERE QuestionId=?", i)
+				err = row.Scan(&subQuestion, &answer, &reason)
+
+				if err == nil {
+					var studentAnswer string
+					row = db.QueryRow("SELECT Answer FROM StudentAnswers WHERE SessionId=? AND QuestionId=?", sessionId, i)
+					err = row.Scan(&studentAnswer)
+
+					if err == nil {
+						subQuestionArray = append(subQuestionArray, SubQuestionResultModel{QuestionId: i, Question: subQuestion, Answer: studentAnswer, CorrectAnswer: answer, Reason: reason})
+					}
+				}
+			}
+
+			json.NewEncoder(w).Encode(ResultAnalysisResponse{SubQuestion: subQuestionArray})
+		}
+	}
 }
 
 func main() {
@@ -294,7 +323,7 @@ func main() {
 		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/update", updateQuestionHandler)
 		http.HandleFunc("/getanswer", getAnswerHandler)
-		http.HandleFunc("/logout", logoutHandler)
+		http.HandleFunc("/results", resultsHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
 		panic(dbErr)
