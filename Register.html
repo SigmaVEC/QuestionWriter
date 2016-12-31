@@ -65,7 +65,7 @@
                  t.setTime(t.getTime() + 60*60*24);
                  var expire = "expire="+ t.toUTCString();
                  document.cookie = "id=" + sess.SessionId + ";" + expire + ";";
-                 window.location = "/questions";
+                 window.location = "/dashboard";
             }
          });
     }
