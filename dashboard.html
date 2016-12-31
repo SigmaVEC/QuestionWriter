@@ -81,18 +81,23 @@
   left:1100px;
   }
 
-  #button3{
-  display:inline-block;
-  text-decoration:none;
-  color:blue;
-  font-weight:bold;
-  min-width:132px;
-  min-height:37px;
-  border:1px solid black;
-  border-radius:12px;
-  text-align:center;
-  background-color:gray;
-  box-shadow:8px 8px 8px gray;
+  #submit{
+  position: absolute;
+  top:450px;
+  left:300px;
+  width:100px;
+  }
+  #next{
+  position: absolute;
+  top:450px;
+  left:400px;
+  width:100px;
+  }
+  #previous{
+  position: absolute;
+  top:450px;
+  left:300px;
+  width:100px;
   }
 
 .button:active{
@@ -128,9 +133,17 @@
     font-size: 18px;
     font-weight: bold;
     text-decoration: none;
-    position: fixed;
-    top:500px;
-    left:1000px;
+    color: #1B232F;
+    position: absolute;
+  top:450px;
+  left:200px;
+  width:100px;
+}
+.rect1 {
+    width: 100px;
+    height: 35px;
+    border: 1px solid black;
+    background-color:white;
 }
     </style>
 
@@ -139,10 +152,10 @@
 	var noquestion, questions, presentquestion, buttonnum, fillorchoice;
 	var result = [];
 	var iod=0;
-	// countdown( "countdown", window.questions[0].Expiry, 0);
     function countdown( elementName, minutes, seconds )
 {
     var element, endTime, hours, mins, msLeft, time;
+    element = document.getElementById( elementName );
 
     function twoDigits( n )
     {
@@ -154,12 +167,6 @@
         msLeft = endTime - (+new Date);
         if ( msLeft < 1000 ) {
             element.innerHTML = "countdown's over!";
-						/////
-						document.cookie = "id=null;0;";
-						disablenext();
-						disableprevious();
-						save(-1);
-						/////
         } else {
             time = new Date( msLeft );
             hours = time.getUTCHours();
@@ -174,7 +181,7 @@
     updateTimer();
 }
 
-// countdown( "countdown", 30, 1);
+countdown( "countdown", 1, 5 );
 ////////////////////////////////////
         function checksessionid(){
         	var sessi = getCookie("id");
@@ -491,11 +498,18 @@
     </script>
 
 	</head>
-    <body onload="getquestion()">
+    <body  onload="getquestion()">
 		<div id="test"></div>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand">Aptitude Test</a>
+                </div>
+            </div>
+        </nav>
         <div class="container-fluid">
             <div class="row" >
-                <div class="col-md-8" id="quesPlane">
+                <div class="col-md-8 " id="quesPlane" >
 										<div id="audiofile"></div>
 										<div id="videofile"></div>
                     <div id="description"></div>
@@ -506,14 +520,14 @@
                     <div id="choice1"></div>
                     <div id="choice2"></div>
                     <div id="choice3"></div>
-				    <button class="button" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
-					<button class="button1" id="previous" onclick="nextfetchquestion(-1)">Previous</button>
+				    <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
+					<button class="btn btn-primary" id="previous" onclick="nextfetchquestion(-1)">Previous</button>
                 </div>
                 <div class="col-md-4" id="sidePlane">
-                    <div style="background=black;width=10px;height=100%;margin-left=800px;"></div>
-                	<div id="createbutton"></div>
-                	<div id="countdown">countdown</div>
-					<button class="button3" id="submit" onclick="save(1)">Submit</button>
+                    <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
+                	<div id="createbutton" ></div>
+                	<div id="countdown"></div>
+					<button class="btn btn-primary" id="submit" onclick="save(1)">Submit</button>
                 </div>
             </div>
         </div>
@@ -526,7 +540,6 @@
 		}
         #quesPlane{
 			height: 100%;
-			border-right: 1px solid #ccc;
         }
         #sidePlane{
 			height:100%;

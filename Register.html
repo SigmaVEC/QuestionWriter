@@ -37,7 +37,7 @@
     var fields = ["first_name", "last_name", "display_name", "email", "password", "password_confirmation"], i, focus=1;
         for(i=0; i<fields.length; i++){
             if(document.getElementById(fields[i]).value==""){
-                alert("fill " + fields[i] + " field");
+                alert("fill all the field");
                 focus=0;
                 document.getElementById(fields[i]).focus();
                 break;
@@ -71,7 +71,7 @@
     }
 </script>
 </head>
-<body>
+<body style="background-color:#E6E6FA;">
 <div class="container">
 
     <div class="row">

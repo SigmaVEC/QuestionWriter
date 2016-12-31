@@ -264,7 +264,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			err = row.Scan(&answer)
 
 			if err == nil {
-				json.NewEncoder(w).Encode(QuestionUpdateRequest{QuestionId: question, Answer: answer})
+				//json.NewEncoder(w).Encode(QuestionUpdateRequest{QuestionId: question, Answer: answer})
 			} else {
 				io.WriteString(w, emptyJson)
 			}
