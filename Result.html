@@ -2,10 +2,46 @@
 <html lang="en">
 <head>
   <script src="js/jquery.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="css/bootstrap-theme.css"/>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+    #naq{
+      font-weight: bold;
+    }
+.branch{
+  top: 80px; /*[wherever you want it]*/
+  left:1100px; /*[wherever you want it]*/
+}
+.semester{
+  top: 100px; /*[wherever you want it]*/
+  left:1100px; /*[wherever you want it]*/
+}
+.academicyear{
+  top: 120px; /*[wherever you want it]*/
+  left:1100px; /*[wherever you want it]*/
+}
+#but{
+  position:fixed;
+  top:500px;
+  left:1100px;
+}
+/*#hrl{
+  top 300px;
+}*/
+/*.date12{
+  top:100px;
+  left:900px;
+}*/
+body {
+    border: #E6E6FA;
+    margin-right: 150px;
+    margin-left: 80px;
+}
+    </style>
     <script>
-    var question, details;
+    var question, details, noquestion;
     function myFunction() {
         window.print();
     }
@@ -17,6 +53,7 @@
       var newDate = new Date();
       var a = dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear();
       $('.date12').text("Date:"+a);
+      studentdetails();
       // $("#a").append("<br>Correct Answer:"+"window.question.Question[i].SubQuestion[j].CAnswer");
       // $("#a").append("<div>"+"window.question.Question[i].Description"+"</div>");
       // $('.sname').text("Student's Name:");//+window.details.StudentName);
@@ -35,8 +72,7 @@
       // var d = new Date();
       // $("#date").html('Date:'+d.getDate()+'/'+d.getDay()+1+'/'+d.getFullYear());
     // }
-fetchanswer();
-// studentdetails();
+
 function checksessionid(){
   var sessi = getCookie("id");
             if(sessi.length>69){
@@ -54,105 +90,85 @@ var ca = document.cookie.split(';');
     return c1[1]+"=";
 }
     function fetchanswer(){
+      var a1;
       // $("div").hide();
       var ssession = getCookie("id");
       var n = ssession.length;
-      // alert(ssession.substring(8, n));
       var session = ssession.substring(8, n);
       $.get("/report", {sessionId: session} ,function(data){
-        alert(data);
-        // window.question = JSON.parse(data);
+        window.question = JSON.parse(data);
+        a1 = window.noquestion = window.question.SubQuestion.length;
+        s();
       });
-      var text, obj;
+    }
+    function s(){
     for(var i=0;i<window.noquestion;i++){
-      for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
-            $("#a").append("<div>"+"window.question.Question[i].Description"+"</div>");
-            $("#a").append("<div>"+window.question.Question[i].SubQuestion[j].QuestionId+"</div>");
-            $("#a").append("<div>"+window.question.Question[i].SubQuestion[j].Question+"</div>");
-              if(window.question.Question[i].SubQuestion[j].Choice==null){
-                //$("#fillintheblank").text("fill the field");
-                // $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                // $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                // $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
-                $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
-              }
-              else{
-                  var cl = window.question.Question[i].SubQuestion[j].Choice.length;
-                  for(var k=0;k<cl;k++){
-                      $("#a"+k).append('a:' + window.question.Question[i].SubQuestion[j].Choice[k]+'     ');
-                  }
-                  $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                  $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                  $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
-              }
+            $(".a").append("<div id=naq>"+window.question.SubQuestion[i].QuestionId+":"+window.question.SubQuestion[i].Question+"</div>");
+            // $(".a").append("<div>"+window.question.SubQuestion[i].Question+"</div>");
+            $(".a").append("<div>Answer : "+window.question.SubQuestion[i].Answer+"</div>");
+            $(".a").append("<div>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</div>");
+            if(window.question.SubQuestion[i].Reason!=""){
+              $(".a").append("<div>Reason : "+window.question.SubQuestion[i].Reason+"</div>");
+            }
           }
         }
-      }
+                // $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                // $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                // $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
+              // else{
+                  // var cl = window.question.Question[i].SubQuestion[j].Choice.length;
+                  // for(var k=0;k<cl;k++){
+                      // $("#a"+k).append('a:' + window.question.Question[i].SubQuestion[j].Choice[k]+'     ');
+                  // }
+                  // $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                  // $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                  // $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
+
 
       function studentdetails(){
         var ssession = getCookie("id");
         var n = ssession.length;
         var session = ssession.substring(8, n);
-        $.get("/studentdetails", {sessionId: session} ,function(data){
-          alert(data);
+        $.get("/studentDetails", {sessionId: session} ,function(data){
           window.details = JSON.parse(data);
+          s1();
         });
-        $('.sname').text("Student's Name:"+window.details.StudentName);
-        $('.snumber').text("Student 's Register Number:"+window.details.Number);
-        $('.year').text("Year:"+window.details.Year);
-        $('.semester').text("Semester:"+window.details.Semester);
-        $('.branch').text("Department:"+window.details.Department);
-        $('.section').text("Section:"+window.details.Section);
-
-
+      }
+        function s1(){
+        $('.sname').text("Student's Name : "+window.details.Name);
+        $('.snumber').text("Student 's Register Number : "+window.details.RegisterNumber);
+        $('.branch').text("Department : "+window.details.Department);
+        $('.year').text("Year : "+window.details.Year);
+        $('.semester').text("Semester : "+window.details.Semester);
+        $('.academicyear').text("Academic Year :"+window.details.AcademicYear+"-"+(window.details.AcademicYear+4));
+        fetchanswer();
       }
 
     </script>
-    <style>
-    #but{
-      position:fixed;
-      top:550px;
-      left:800px;
-    }
-#semestser{
-  position:fixed;
-  top: 100px; /*[wherever you want it]*/
-  left:500px; /*[wherever you want it]*/
-}
-#branch{
-  position:fixed;
-  top: 100px; /*[wherever you want it]*/
-  left:300px; /*[wherever you want it]*/
-}
-
-    </style>
 </head>
 <body style="background-color:#E6E6FA;">
 <!-- <object width=100% height=570 data="mozilla.pdf">
 </object> -->
-<div class="as" align="center">GE6674 & COMMUNICATION SKILLS LABORATORY</div>
-<div align="center">LAB RECORD</div>
-<div align="center">LAB SESSION</div>
-<div align="left" class="date12"></div>
-<div align="right" class="time">sada</div>
-<div align="left" class="sname"></div>
-<div align="left" class="snumber">sad</div>
-<div align="left" class="year">asdsa</div>
-<div align="right" class="semester"></div>
-<div align="right" class="branch">dgsdf</div>
-<div align="right" class="section">asds</div>
-<div align="left"  class="totalmarks">asdfsa</div>
-<div align="right" class="smark">asdasd</div>
-<button id="but1" onclick="sam()"></button>
-<hr>
-<div id="a" >asdsa</div>
+<div class="as" align="center" style="font-weight: bold">GE6674 & COMMUNICATION SKILLS LABORATORY</div>
+<div align="center" style="font-weight: bold">LAB RECORD</div>
+<div align="center" style="font-weight: bold">LAB SESSION</div>
+<div class="date12"></div>
+<div class="time"></div>
+<div class="sname"></div>
+<div class="snumber"></div>
+<div class="year"></div>
+<div class="semester"></div>
+<div class="branch"></div>
+<div class="academicyear"></div>
+<div class="totalmarks"></div>
+<div class="smark"></div>
+<hr id="hrl">
+<div class="a" ></div>
 <!-- <div id="sanswer">asdsad</div> -->
 <!-- <div id="canswer">asdsa</div> -->
 <!-- <div id="explain">asdsad</div> -->
-<div align="left" class="date1">sadsa</div>
+<div align="left" class="date1"></div>
 <div align="right" class="facultyincharge">FACUKTY-IN-CHARGE</div>
-<button id="but" onclick="myFunction()">Print this page</button>
+<button id="but" class="btn btn-primary" onclick="myFunction()">Print this page</button>
 </body>
 </html>

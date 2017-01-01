@@ -18,8 +18,8 @@ var (
 	sessionExpiry = 30 //In minutes
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "test"
-	password string = "test"
+	user string = "root"
+	password string = "toor"
 	database string = "QuestionWriter"
 )
 
