@@ -11,6 +11,7 @@ import (
 	"io"
 	"errors"
 	"strconv"
+	"fmt"
 )
 
 var (
@@ -18,8 +19,8 @@ var (
 	sessionExpiry = 30 //In minutes
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "root"
-	password string = "toor"
+	user string = "test"
+	password string = "test"
 	database string = "QuestionWriter"
 )
 
@@ -44,7 +45,7 @@ type QuestionUpdateRequest struct {
 type SubQuestionModel struct {
 	QuestionId int
 	Question   string
-	Choice []  string
+	Choice     []string
 }
 
 type QuestionModel struct {
@@ -304,12 +305,20 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 
 					if err == nil {
 						subQuestionArray = append(subQuestionArray, SubQuestionResultModel{QuestionId: i, Question: subQuestion, Answer: studentAnswer, CorrectAnswer: answer, Reason: reason})
+					} else {
+						io.WriteString(w, emptyJson)
 					}
+				} else {
+					io.WriteString(w, emptyJson)
 				}
 			}
 
 			json.NewEncoder(w).Encode(ResultAnalysisResponse{SubQuestion: subQuestionArray})
+		} else {
+			io.WriteString(w, emptyJson)
 		}
+	} else {
+		io.WriteString(w, emptyJson)
 	}
 }
 
