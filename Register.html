@@ -80,7 +80,7 @@
                  var t = new Date();
                  t.setTime(t.getTime() + 60*60*24);
                  var expire = "expire="+ t.toUTCString();
-                 alert(sess.SessionId);
+                //  alert(sess.SessionId);
                  document.cookie = "id=" + sess.SessionId + ";" + expire + ";";
                  window.location = "/dashboard";
             }
