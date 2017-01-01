@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script>
+    var question;
     function myFunction() {
         window.print();
     }
@@ -56,18 +57,21 @@ var ca = document.cookie.split(';');
             $("#a").append("<div>"+window.question.Question[i].SubQuestion[j].Question+"</div>");
               if(window.question.Question[i].SubQuestion[j].Choice==null){
                 //$("#fillintheblank").text("fill the field");
-                $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
+                // $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                // $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                // $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
+                $("#a").append("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                $("#a").append("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                $("#a").append("Explain:"+window.question.Question[i].SubQuestion[j].explain);
               }
               else{
                   var cl = window.question.Question[i].SubQuestion[j].Choice.length;
                   for(var k=0;k<cl;k++){
                       $("#a"+k).append('a:' + window.question.Question[i].SubQuestion[j].Choice[k]+'     ');
                   }
-                  $("#canswer").text("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                  $("#sanswer").text("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                  $("#Explain").text("Explain:"+window.question.Question[i].SubQuestion[j].explain);
+                  $("#a").append("Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
+                  $("#a").append("Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
+                  $("#a").append("Explain:"+window.question.Question[i].SubQuestion[j].explain);
               }
           }
         }
@@ -116,10 +120,10 @@ var ca = document.cookie.split(';');
 <div align="right" id="smark">asdasd</div>
 <hr>
 <div id="a" >asdsa</div>
-<div id="sanswer">asdsad</div>
-<div id="canswer">asdsa</div>
-<div id="explain">asdsad</div>
-<div align="left" id="date">sadsa</div>
+<!-- <div id="sanswer">asdsad</div> -->
+<!-- <div id="canswer">asdsa</div> -->
+<!-- <div id="explain">asdsad</div> -->
+<div align="left" id="date1">sadsa</div>
 <div align="right" id="facultyincharge">FACUKTY-IN-CHARGE</div>
 <button id="but" onclick="myFunction()">Print this page</button>
 </body>
