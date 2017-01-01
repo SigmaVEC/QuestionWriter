@@ -11,7 +11,6 @@ import (
 	"io"
 	"errors"
 	"strconv"
-	"fmt"
 )
 
 var (
@@ -228,7 +227,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 					if err == nil {
 						json.NewEncoder(w).Encode(struct {
 							Message string
-						}{Message: "Success"})
+						}{ Message: "Success" })
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -238,7 +237,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 					if err == nil {
 						json.NewEncoder(w).Encode(struct {
 							Message string
-						}{Message: "Success"})
+						}{ Message: "Success" })
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -269,7 +268,9 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			err = row.Scan(&answer)
 
 			if err == nil {
-				//json.NewEncoder(w).Encode(QuestionUpdateRequest{QuestionId: question, Answer: answer})
+				json.NewEncoder(w).Encode(QuestionUpdateRequest {
+					QuestionId: question,
+					Answer: answer })
 			} else {
 				io.WriteString(w, emptyJson)
 			}
@@ -304,7 +305,12 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 					err = row.Scan(&studentAnswer)
 
 					if err == nil {
-						subQuestionArray = append(subQuestionArray, SubQuestionResultModel{QuestionId: i, Question: subQuestion, Answer: studentAnswer, CorrectAnswer: answer, Reason: reason})
+						subQuestionArray = append(subQuestionArray, SubQuestionResultModel {
+							QuestionId: i,
+							Question: subQuestion,
+							Answer: studentAnswer,
+							CorrectAnswer: answer,
+							Reason: reason })
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -313,12 +319,33 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			json.NewEncoder(w).Encode(ResultAnalysisResponse{SubQuestion: subQuestionArray})
+			json.NewEncoder(w).Encode(ResultAnalysisResponse {
+				SubQuestion: subQuestionArray })
 		} else {
 			io.WriteString(w, emptyJson)
 		}
 	} else {
 		io.WriteString(w, emptyJson)
+	}
+}
+
+func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
+	sessionId := r.FormValue("sessionId")
+	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
+	err := dbSession.Scan(&sessionId)
+
+	if err == nil && len(sessionId) != 0 {
+		var stringData [3]string
+		var intData [3]int
+		row := db.QueryRow("SELECT StudentId, Name, AcademicYear, Department, Year, Semester FROM Session WHERE SessionId=?", sessionId)
+		err = row.Scan(&stringData[0], &stringData[1], &intData[0], &stringData[2], &intData[1], &intData[2])
+		json.NewEncoder(w).Encode(RegisterRequest {
+			RegisterNumber: stringData[0],
+			Name: stringData[1],
+			AcademicYear: intData[0],
+			Department: stringData[2],
+			Year: intData[1],
+			Semester: intData[2] })
 	}
 }
 
@@ -337,6 +364,7 @@ func main() {
 		http.HandleFunc("/questions", getQuestionsHandler)
 		http.HandleFunc("/update", updateQuestionHandler)
 		http.HandleFunc("/getanswer", getAnswerHandler)
+		http.HandleFunc("/studentDetails", studentDetailsHandler)
 		http.HandleFunc("/report", reportHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
