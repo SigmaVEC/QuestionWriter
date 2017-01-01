@@ -210,18 +210,34 @@
                     	return true;
                     }
         }
-        function getCookie(cname) {
-		    var name = cname + "=";
-		    var ca = document.cookie.split(';');
-		        var c = ca[0];
-		        var c1 = c.split('=');
-		        return c1[1]+"=";
-		}
+    //     function getCookie(cname) {
+		//     var name = cname + "=";
+		//     var ca = document.cookie.split(';');
+		//         var c = ca[0];
+		//         var c1 = c.split('=');
+		//         return c1[1]+"=";
+		// }
+		function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+		return "";
+}
 						function getquestion(){
 							var session = getCookie("id");
 								$.get("/questions", {sessionId: session} ,function(data){
 									window.question = JSON.parse(data);
+									alert(data);
 		  						window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
+									alert(window.noquestion);
 									Countdown( "countdown", window.question.Expiry, 0);
 										nextfetchquestion(1);
 										disableprevious();
@@ -353,7 +369,13 @@
 							}
 				}
 
+				// $('body').bind('beforeunload',function(){
+   				//do something
+					// 	document.cookie="ctime="+
+				// });
+
         function nextfetchquestion(){
+					// alert(parseInt($(".countdown").val()));
 					// $("div").hide();
 					disablenext();
         	var text, obj;
@@ -374,16 +396,27 @@
 	            enableprevious();
 	        }
 					if(window.iod<=window.noquestion){
+						alert("true");
         	if(checksessionid()){
 				for(var i=0;i<window.noquestion;i++){
+					alert(i);
+					alert(window.noquestion+""+window.question.Question[1].SubQuestion[0].QuestionId);
+					alert(window.question.Question[i].SubQuestion.length);
 					for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
 						if(window.question.Question[i].SubQuestion[j].QuestionId==window.iod){
 							if(window.question.Question[i].File==""){
 								$("#fileaudio").remove();
 								$("#filevideo").remove();
+								alert("dsfd"+window.iod);
 								$("#description").text(window.question.Question[i].Description);
 								$("#question").text(window.question.Question[i].SubQuestion[j].QuestionId+':'+window.question.Question[i].SubQuestion[j].Question);
-									if(window.question.Question[i].SubQuestion[j].Choice==""){
+									if(window.question.Question[i].SubQuestion[j].Choice==null){
+										alert(window.question.Question[i].SubQuestion[j].Choice+"asa");
+										$("#choice3").hide();
+										$("#choice2").hide();
+										$("#choice1").hide();
+										$("#choice0").hide();
+										$("#fillintheblank").show();
 										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
 										window.fillorchoice="fill";
 										if(arguments[0]==-1){
@@ -394,9 +427,15 @@
 										prefetchquestion();
 										enablenext();
 										}
+										break;
 									}
 									else{
+										$("#fillintheblank").hide();
 									    window.fillorchoice="choice";
+											$("#choice3").show();
+											$("#choice2").show();
+											$("#choice1").show();
+											$("#choice0").show();
 											var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 											for(var k=0;k<cl;k++){
 													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
@@ -418,9 +457,12 @@
 										// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
 										// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
 										// $("#choice3").html('<input type="radio" name="choice" id="3choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[3] +'</input>');
+										break;
 									}
+
 							}
 							else{
+								alert("dsfd");
 								var a1 = window.question.Question[i].File;
 								var n = a1.length;
 								if(a1.substring(n-3, n)=="mp3"){
@@ -432,7 +474,13 @@
 								}
             					$("#description").text(window.question.Question[i].Description);
             					$("#question").text(window.question.Question[i].SubQuestion[j].QuestionId+':'+window.question.Question[i].SubQuestion[j].Question);
-            					if(window.question.Question[i].SubQuestion[j].Choice==""){
+            					if(window.question.Question[i].SubQuestion[j].Choice==null){
+												alert(window.question.Question[i].SubQuestion[j].Choice+"asa");
+												$("#choice3").hide();
+												$("#choice2").hide();
+												$("#choice1").hide();
+												$("#choice0").hide();
+												$("#fillintheblank").show();
 										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
 										window.fillorchoice="fill";
 										if(arguments[0]==-1){
@@ -443,10 +491,16 @@
 										prefetchquestion();
 										enablenext();
 										}
+										break;
 									}
 									else{
+										$("#fillintheblank").hide();
 									window.fillorchoice="choice";
 									// disablenext();
+									$("#choice3").show();
+									$("#choice2").show();
+									$("#choice1").show();
+									$("#choice0").show();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 									for(var k=0;k<cl;k++){
 											$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
@@ -466,6 +520,7 @@
 									prefetchquestion();
 									enablenext();
 									}
+									break;
 									// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0]+'</input>');
 									// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
 									// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
@@ -476,9 +531,10 @@
             				break;
 						}
 					}
-					break;
+					// break;
 					// enablenext();
 				}
+				alert("end0");
 			}
 			else{
 				alert("Times Up");
@@ -561,7 +617,8 @@
 
               tmp='choicelabel'+tmp;
               //alert(tmp);
-              a = document.getElementById(tmp).innerHTML;
+              // a = document.getElementById(tmp).innerHTML;
+							a = $(tmp).val();
           }
 					var json = JSON.stringify({"QuestionId":w,"Answer":a});
 					$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
