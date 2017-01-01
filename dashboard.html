@@ -284,7 +284,7 @@
 											disablenext();
 											var cl = window.question.Question[i].SubQuestion[j].Choice.length();
 											for(var k=0;k<cl;k++){
-													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</input>');
+													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 											}
 										// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
 										// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
@@ -317,7 +317,7 @@
 									disablenext();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length();
 									for(var k=0;k<cl;k++){
-											$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</input>');
+											$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable() "><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 									}
 									// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
 									// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
@@ -346,7 +346,10 @@
 								// $('input:text[name=fill1]')[window.answer].value = window.answer;
 								$('#fill11').val(window.answer);
 							}else{
-								$('input:radio[name=choice]')[window.answer].checked = true;
+							    tmp=window.answer;
+							    tmp=$("label:contains('"+tmp+"')").attr('id');
+                                var i = parseInt(tmp.split("choicelabel")[1]);
+								$('input:radio[name=choice]')[i].checked = true;
 							}
 				}
 
@@ -396,7 +399,7 @@
 									    window.fillorchoice="choice";
 											var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 											for(var k=0;k<cl;k++){
-													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</input>');
+													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 											}
 											if(cl==3){
 												$("#choice3").hide();
@@ -446,7 +449,7 @@
 									// disablenext();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 									for(var k=0;k<cl;k++){
-											$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</input>');
+											$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 									}
 									if(cl==3){
 										$("#choice3").hide();
@@ -554,7 +557,11 @@
 							a=$("#fill11").val();
 					}
 					else {
-              a = $('input:radio[name=choice]:checked').val();
+              tmp = $('input:radio[name=choice]:checked').val();
+
+              tmp='choicelabel'+tmp;
+              //alert(tmp);
+              a = document.getElementById(tmp).innerHTML;
           }
 					var json = JSON.stringify({"QuestionId":w,"Answer":a});
 					$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
