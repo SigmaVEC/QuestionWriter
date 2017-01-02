@@ -165,9 +165,11 @@
     </style>
 
     <script>
-	var noquestion, questions, presentquestion, buttonnum, fillorchoice, currentid=0, answer, maxid=1;
+	var noquestion, questions, presentquestion, buttonnum, f, fillorchoice, currentid=0, answer, maxid=1;
 	var result = [];
+	var result1 = [];
 	var iod=0;
+	// window.onbeforeunload = warning();
 	$(document).ready(function(){
 	getquestion();
 	disablesubmit();
@@ -222,16 +224,15 @@
     	document.cookie = cname + "=" + cvalue + ";";
 		}
 
-	// 	function warning()
-	//  {
-	// // 		// alert ('Detecting the page refresh using Java Script'); //you can put your code here.
-	// // 		var elem = document.getElementById("countdown");
-	// // 				var elementText = elem.innerText || elem.textContent;
-	// // 				alert(elementText);
-	// if(f==0){
-	// 		    setCookie("id",null);}
-	//  }
-	//  window.onbeforeunload = warning();
+		function warning()
+	 {
+			alert ('Detecting the page refresh using Java Script'); //you can put your code here.
+			var elem = $("#countdown").html();
+					alert(elem);
+	if(f==0){
+			    setCookie("id",null);}
+	 }
+	 window.onbeforeunload = setTimeout(warning(),100);
 
 		function getCookie(cname) {
     var name = cname + "=";
@@ -399,6 +400,7 @@
 				// });
 
         function nextfetchquestion(){
+					// warning();
 					// alert(parseInt($(".countdown").val()));
 					// $("div").hide();
 					disablenext();
@@ -486,13 +488,17 @@
 
 							}
 							else{
-								// alert("dsfd");
+								// alert("dsfd");(
+								$("#audiofile").remove();
+								$("#videfile").remove();
 								var a1 = window.question.Question[i].File;
 								var n = a1.length;
 								if(a1.substring(n-3, n)=="mp3"){
+									$("#audiofile").show();
 									$("#audiofile").html('<audio id="fileaudio" width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
 								}
 								else if(a1.substring(n-3, n)=="mp4"){
+									$("#audiofile").show();
 									$("#videofile").html('<video id="filevideo" width="640" height="264" controls>' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
 
 								}
@@ -631,21 +637,35 @@
         // }
 				function save(){
 					var w = window.currentid;
-					var a;
+					var a,a1,a11;
 
 					if(window.fillorchoice == "fill"){
 							a=$("#fill11").val();
+							a1=$("#fill11").val();
 					}
 					else {
               // var tmp = $('input:radio[name=choice]:checked').val();///////////////
               // tmp='choicelabel'+tmp;///////////////
-							// a = $(tmp).val();////////////////////////
-							// a=$( "input:checked" ).val();
+							// a1= $(tmp).val();////////////////////////
+							// a1=$( "input:checked" ).val();
+							// alert(a1);
+							// a1=$( "input:checked" ).val();
 							a = $('input:radio[name="choice"]:checked').val();
-							// alert(a);
+							for(var i=0;i<window.question.Question.length;i++){
+								// alert(i);
+								// alert(window.noquestion+""+window.question.Question[1].SubQuestion[0].QuestionId);
+								// alert(window.question.Question[i].SubQuestion.length);
+								for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
+									if(window.question.Question[i].SubQuestion[j].QuestionId==window.currentid){
+										a1 = window.question.Question[i].SubQuestion[j].Choice[a];
+										// alert(asq);
+									}
+								}
+							}
 
           }
-					var json = JSON.stringify({"QuestionId":w,"Answer":a});
+					// alert(a1+w);
+					var json = JSON.stringify({"QuestionId":w,"Answer":a1});
 					$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
 							//store data in local storage
 							window.result[w] = a;

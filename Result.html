@@ -11,16 +11,16 @@
       font-weight: bold;
     }
 .branch{
-  top: 80px; /*[wherever you want it]*/
-  left:1100px; /*[wherever you want it]*/
+  top: 80px;
+  left:1100px;
 }
 .semester{
-  top: 100px; /*[wherever you want it]*/
-  left:1100px; /*[wherever you want it]*/
+  top: 100px;
+  left:1100px;
 }
 .academicyear{
-  top: 120px; /*[wherever you want it]*/
-  left:1100px; /*[wherever you want it]*/
+  top: 120px;
+  left:1100px;
 }
 #but{
   position:fixed;
@@ -101,6 +101,7 @@ var ca = document.cookie.split(';');
       var n = ssession.length;
       var session = ssession.substring(8, n);
       $.get("/report", {sessionId: session} ,function(data){
+        alert(data);
         window.question = JSON.parse(data);
         a1 = window.noquestion = window.question.SubQuestion.length;
         s();
@@ -109,7 +110,11 @@ var ca = document.cookie.split(';');
     function s(){
     for(var i=0;i<window.noquestion;i++){
             $(".a").append("<div id=naq>"+window.question.SubQuestion[i].QuestionId+":"+window.question.SubQuestion[i].Question+"</div>");
-            // $(".a").append("<div>"+window.question.SubQuestion[i].Question+"</div>");
+            if(window.question.SubQuestion[i].Choice.length!=null){
+            for(j=0;j<window.question.SubQuestion[i].Choice.length;j++){
+            $(".a").append("<div>"+window.question.SubQuestion[i].Choice[j]+"</div>");
+          }
+        }
             $(".a").append("<div>Answer : "+window.question.SubQuestion[i].Answer+"</div>");
             $(".a").append("<div>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</div>");
             if(window.question.SubQuestion[i].Reason!=""){
