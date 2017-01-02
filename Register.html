@@ -26,6 +26,41 @@
 
 </style>
     <script>
+    // var y;
+    // var newDate = new Date();
+    // $(document).ready(function(){
+    // for(var i=1;i<12;i++){
+    //   y[i] = newDate.getFullYear();
+    //   alert(y[i]);
+    // }
+    // $("#1").val(y1+"-"+y4);
+    // $("#2").val(y2+"-"+y5);
+    // $("#3").val(y3+"-"+y6);
+    // $("#4").val(y4+"-"+y7);
+    // $("#5").val(y5+"-"+y8);
+    // $("#6").val(y7+"-"+y9);
+    // $("#7").val(y8+"-"+y10);
+    // $("#8").val(y9+"-"+y11);
+    // $("#academicyearlist").append("<option value='" + y5+"-"+y8 + "'>");
+    //   });
+  // }
+    // var y2 = newDate.getFullYear();
+    // var y3 = newDate.getFullYear();
+    // var y4 = newDate.getFullYear();
+    // var y5 = newDate.getFullYear();
+    // var y6 = newDate.getFullYear();
+    // var y7 = newDate.getFullYear();
+    // var y8 = newDate.getFullYear();
+    // var y9 = newDate.getFullYear();
+    // var y10 = newDate.getFullYear();
+    // var y11 = newDate.getFullYear();
+    // var y1 = newDate.getFullYear();
+
+    // $("#1").append($('<option/>').val("academicyearlist").text("value"));
+    // $("#2").append($('<option/>').val("academicyearlist").text("value"));
+    // $("#3").append($('<option/>').val("academicyearlist").text("value"));
+
+
   $( function() {
     $( document ).tooltip();
   } );
@@ -113,20 +148,58 @@ function setCookie(cname, cvalue, exdays) {
                 </div>
             </div>
             <div class="form-group">
-                <input type="text" title="Enter Your Department" name="display_name" id="display_name" class="form-control input-lg" placeholder="Department" tabindex="3">
+                <input type="text" list="departmentlist" title="Enter Your Department" name="display_name" id="display_name" class="form-control input-lg" placeholder="Department" tabindex="3">
+                <datalist id='departmentlist'>
+                <option label='CSE' value='Computer Science & Engineering'>
+                <option label='IT' value='Information Technology'>
+                <option label='MECH' value='Mechanical Engineering'>
+                <option label='EEE' value='Electrical & Electronic Engineering'>
+                <option label='ECE' value='Electronics & Communication Engineering'>
+                <option label='CIVIL' value='Civil Engineering'>
+                <option label='EIE' value='Electronics & Instrumentation Engineering'>
+                <option label='PROD' value='Production Engineering'>
+                <option label='AUTO' value='Automobile Engineering'>
+                </datalist>
             </div>
             <div class="form-group">
-                <input type="number" min="2000" max="2016" title="Enter Academic Year" name="email" id="email" class="form-control input-lg" placeholder="Academic Year" tabindex="4">
+                <input type="text" list="academicyearlist" min="2000" max="2016" title="Enter Academic Year" name="email" id="email" class="form-control input-lg" placeholder="Academic Year" tabindex="4">
+                <!-- <option label='CSE' value=<script>newDate.getFullYear();</script>> -->
+                <datalist id='academicyearlist'>
+                <option value='2013-2017'>
+                <option value='2014-2018'>
+                <option value='2015-2019'>
+                <option value='2016-2020'>
+                <option value='2017-2021'>
+                <option value='2018-2022'>
+                <option value='2019-2023'>
+                <option value='2020-2024'>
+                </datalist>
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="number" min="1" max="4" title="Enter Year 1,2,3,4" name="password" id="password" class="form-control input-lg" placeholder="Year" tabindex="5">
+                        <input type="I" list="years" title="Enter Year 1,2,3,4" name="password" id="password" class="form-control input-lg" placeholder="Year" tabindex="5">
+                        <datalist id="years">
+                        <option label='1st year' value='I Year'>
+                        <option label='2nd year' value='II Year'>
+                        <option label='3rd year' value='III Year'>
+                        <option label='4th year' value='IV Year'>
+                        </datalist>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="number" min="1" max="8" title="Enter Semester" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Semester" tabindex="6">
+                        <input type="I" list="semesters" title="Enter Semester" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Semester" tabindex="6">
+                        <datalist id="semesters">
+                        <option label='1st semester' value='I SEM'>
+                        <option label='2nd semester' value='II SEM'>
+                        <option label='3rd semester' value='III SEM'>
+                        <option label='4th semester' value='IV SEM'>
+                        <option label='5th semester' value='V SEM'>
+                        <option label='6th semester' value='VI SEM'>
+                        <option label='7th semester' value='VII SEM'>x
+                        <option label='8th semester' value='VIII SEM'>
+                        </datalist>
                     </div>
                 </div>
             </div>
