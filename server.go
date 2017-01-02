@@ -15,11 +15,11 @@ import (
 
 var (
 	sessionKeyLength = 50 //In bytes
-	sessionExpiry = 30 //In minutes
+	sessionExpiry = 60 //In minutes
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "root"
-	password string = "toor"
+	user string = "test"
+	password string = "test"
 	database string = "QuestionWriter"
 )
 
