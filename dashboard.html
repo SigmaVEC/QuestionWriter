@@ -165,7 +165,7 @@
     </style>
 
     <script>
-	var noquestion, questions, presentquestion, buttonnum, f, fillorchoice, currentid=0, answer, maxid=1;
+	var noquestion, questions, presentquestion, buttonnum, f=0, fillorchoice, currentid=0, answer, maxid=1;
 	var result = [];
 	var result1 = [];
 	var iod=0;
@@ -194,6 +194,8 @@
             hours = time.getUTCHours();
             mins = time.getUTCMinutes();
             $("#countdown").html((hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() ));
+						var ctime = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+						setCookie("ctime", ctime, 0);
             //element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
             setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
         }
@@ -224,14 +226,14 @@
     	document.cookie = cname + "=" + cvalue + ";";
 		}
 
-		function warning()
-	 {
-			alert ('Detecting the page refresh using Java Script'); //you can put your code here.
-			var elem = $("#countdown").html();
-					alert(elem);
-	if(f==0){
-			    setCookie("id",null);}
-	 }
+	// 	function warning()
+	//  {
+	// 		alert ('Detecting the page refresh using Java Script'); //you can put your code here.
+	// 		var elem = $("#countdown").html();
+	// 				alert(elem);
+	// if(f==0){
+	// 		    setCookie("id",null);}
+	//  }
 	// window.onbeforeunload = setTimeout(warning(),100);
 
 		function getCookie(cname) {
@@ -253,11 +255,20 @@
 								$.get("/questions", {sessionId: session} ,function(data){
 									window.question = JSON.parse(data);
 									// alert(data);
-		  						window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
+		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
 									// alert(window.noquestion);
 									// if(getCookie("ctime")==""){
 									// 	alert(getCookie("ctime"));
+									if(getCookie("ctime")==""){
 										Countdown( "countdown", window.question.Expiry, 0);
+										alert("empty");
+									}
+									else{
+										alert(getCookie("ctime"));
+										var ms;
+										ms = getCookie("ctime").split(":");
+										Countdown( "countdown", parseInt(ms[0]), parseInt(ms[1]));
+									}
 									// 	setCookie("ctime","",0);
 									// }
 									// else{
@@ -337,7 +348,7 @@
 								var n = a1.length;
 								if(a1.substring(n-3, n)=="mp3"){
 									//audio
-									alert(a1);
+									// alert(a1);
 									$("#audiofile").html('<audio id="fileaudio" width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
 								}
 								else if(a1.substring(n-3, n)=="mp4"){
@@ -489,17 +500,20 @@
 
 							}
 							else{
-								// alert("dsfd");(
+								alert("dsfd");
 								$("#audiofile").remove();
 								$("#videfile").remove();
 								var a1 = window.question.Question[i].File;
 								var n = a1.length;
+								alert(a1);
 								if(a1.substring(n-3, n)=="mp3"){
+									alert(a1);
 									$("#audiofile").show();
 									$("#audiofile").html('<audio id="fileaudio" width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
 								}
 								else if(a1.substring(n-3, n)=="mp4"){
-									$("#audiofile").show();
+									alert(a1);
+									$("#videofile").show();
 									$("#videofile").html('<video id="filevideo" width="640" height="264" controls>' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
 
 								}

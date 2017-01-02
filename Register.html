@@ -49,7 +49,11 @@
         var c1 = c.split('=');
         return c1[1]+"=";
 }
+function setCookie(cname, cvalue, exdays) {
+  document.cookie = cname + "=" + cvalue + ";";
+}
     function check(){
+      setCookie("ctime", "", 0);
     var fields = ["first_name", "last_name", "display_name", "email", "password", "password_confirmation"], i, focus=1;
         for(i=0; i<fields.length; i++){
             if(document.getElementById(fields[i]).value==""){
