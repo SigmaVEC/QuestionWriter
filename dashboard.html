@@ -217,6 +217,22 @@
 		//         var c1 = c.split('=');
 		//         return c1[1]+"=";
 		// }
+
+		function setCookie(cname, cvalue, exdays) {
+    	document.cookie = cname + "=" + cvalue + ";";
+		}
+
+	// 	function warning()
+	//  {
+	// // 		// alert ('Detecting the page refresh using Java Script'); //you can put your code here.
+	// // 		var elem = document.getElementById("countdown");
+	// // 				var elementText = elem.innerText || elem.textContent;
+	// // 				alert(elementText);
+	// if(f==0){
+	// 		    setCookie("id",null);}
+	//  }
+	//  window.onbeforeunload = warning();
+
 		function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -238,7 +254,14 @@
 									// alert(data);
 		  						window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
 									// alert(window.noquestion);
-									Countdown( "countdown", window.question.Expiry, 0);
+									// if(getCookie("ctime")==""){
+									// 	alert(getCookie("ctime"));
+										Countdown( "countdown", window.question.Expiry, 0);
+									// 	setCookie("ctime","",0);
+									// }
+									// else{
+									// 	document.getElementById(countdown).innerHTML = getCookie("ctime");
+									// }
 										nextfetchquestion(1);
 										disableprevious();
 										disablenext();
@@ -619,7 +642,7 @@
 							// a = $(tmp).val();////////////////////////
 							// a=$( "input:checked" ).val();
 							a = $('input:radio[name="choice"]:checked').val();
-							alert(a);
+							// alert(a);
 
           }
 					var json = JSON.stringify({"QuestionId":w,"Answer":a});
@@ -653,6 +676,13 @@
 				        nextfetchquestion(-1);
 								// enablesubmit();
 				    }
+						// if(arguments[0]==9){
+				    //     //submit button
+						// 		var elem = document.getElementById("countdown");
+						// 		var elementText = elem.innerText || elem.textContent
+				    //     alert(elementText);
+						// 		// enablesubmit();
+				    // }
 				    // else if(arguments[0]==2){
 				    //     //series button
 						// 		alert(window.buttonnum);
