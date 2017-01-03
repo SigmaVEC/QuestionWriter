@@ -18,18 +18,18 @@ var (
 	sessionExpiry = 60 //In minutes
 	emptyJson = "{}"
 	db *sql.DB
-	user string = "root"
-	password string = "toor"
+	user string = "test"
+	password string = "test"
 	database string = "QuestionWriter"
 )
 
 type RegisterRequest struct {
-	RegisterNumber string
+	RegisterNumber int
 	Name           string
-	AcademicYear   int
+	AcademicYear   string
 	Department     string
-	Year           int
-	Semester       int
+	Year           string
+	Semester       string
 }
 
 type RegisterResponse struct {
@@ -335,17 +335,17 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	err := dbSession.Scan(&sessionId)
 
 	if err == nil && len(sessionId) != 0 {
-		var stringData [3]string
-		var intData [3]int
+		var stringData [5]string
+		var intData [1]int
 		row := db.QueryRow("SELECT StudentId, Name, AcademicYear, Department, Year, Semester FROM Session WHERE SessionId=?", sessionId)
-		err = row.Scan(&stringData[0], &stringData[1], &intData[0], &stringData[2], &intData[1], &intData[2])
+		err = row.Scan(&intData[0], &stringData[0], &stringData[1], &stringData[2], &stringData[3], &stringData[4])
 		json.NewEncoder(w).Encode(RegisterRequest {
-			RegisterNumber: stringData[0],
-			Name: stringData[1],
-			AcademicYear: intData[0],
+			RegisterNumber: intData[0],
+			Name: stringData[0],
+			AcademicYear: stringData[1],
 			Department: stringData[2],
-			Year: intData[1],
-			Semester: intData[2] })
+			Year: stringData[3],
+			Semester: stringData[4] })
 	}
 }
 
@@ -366,8 +366,12 @@ func main() {
 		http.HandleFunc("/getanswer", getAnswerHandler)
 		http.HandleFunc("/studentDetails", studentDetailsHandler)
 		http.HandleFunc("/report", reportHandler)
-		http.ListenAndServe(":8000", nil)
+		http.ListenAndServe(":8001", nil)
 	} else {
 		panic(dbErr)
 	}
 }
+
+
+////////////////////
+//need to make change in sql database in session table only register number is int other are string;

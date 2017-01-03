@@ -9,124 +9,24 @@
 		<script src="js/bspage.js"></script>
 
 		<style>
-        .button{
-  display:inline-block;
-  text-decoration:none;
-  color:yellow;
-  font-weight:bold;
-  min-width:132px;
-  min-height:37px;
-  border:1px solid black;
-  border-radius:12px;
-  text-align:center;
-  background-color:gray;
-  box-shadow:8px 8px 8px gray;
-  margin:10px;
-  position:fixed;
-  top:500px;
-  left:500px;
-  }
-
-  .button1{
-  display:inline-block;
-  text-decoration:none;
-  color:blue;
-  font-weight:bold;
-  min-width:132px;
-  min-height:37px;
-  border:1px solid black;
-  border-radius:12px;
-  text-align:center;
-  background-color:gray;
-  box-shadow:8px 8px 8px gray;
-  margin:10px;
-  position:fixed;
-  top:500px;
-  left:300px;
-  }
-
-  .button2{
-  display:inline-block;
-  text-decoration:none;
-  color:blue;
-  font-weight:bold;
-  min-width:132px;
-  min-height:37px;
-  border:1px solid black;
-  border-radius:12px;
-  text-align:center;
-  background-color:gray;
-  box-shadow:8px 8px 8px gray;
-  margin:10px;
-  position:fixed;
-  top:500px;
-  left:700px;
-  }
-
-  .button3{
-  display:inline-block;
-  text-decoration:none;
-  color:blue;
-  font-weight:bold;
-  min-width:132px;
-  min-height:37px;
-  border:1px solid black;
-  border-radius:12px;
-  text-align:center;
-  background-color:gray;
-  box-shadow:8px 8px 8px gray;
-  margin:10px;
-  position:fixed;
-  top:500px;
-  left:1100px;
-  }
-
   #submit{
-  position: absolute;
-  top:450px;
-  left:280px;
+  position: fixed;
+	bottom: 50px;
+  left:1200px;
   width:100px;
   }
   #next{
-  position: absolute;
-  top:450px;
-  left:400px;
+  position: fixed;
+	bottom: 50px;
+  left:700px;
   width:100px;
   }
   #previous{
-  position: absolute;
-  top:450px;
-  left:300px;
+  position: fixed;
+	bottom: 50px;
+  left:600px;
   width:100px;
   }
-
-.button:active{
-  background-color:blue;
-  position:fixed;
-  top:508px;
-  left:808px;
-}
-
-.button1:active{
-  background-color:blue;
-  position:fixed;
-  top:508px;
-  left:658px;
-}
-
-.button2:active{
-  background-color:blue;
-  position:fixed;
-  top:508px;
-  left:958px;
-}
-
-.button3:active{
-  background-color:blue;
-  position:fixed;
-  top:508px;
-  left:1108px;
-}
 #countdown {
     color: #1B232F;
     font-family: Verdana, Arial, sans-serif;
@@ -152,7 +52,7 @@
 
 .rect1 {
     width: 100px;
-    height: 30px;
+    height: 27px;
     border: 1px solid red;
     background-color:white;
 }
@@ -165,11 +65,12 @@
     </style>
 
     <script>
-	var noquestion, questions, presentquestion, buttonnum, f=0, fillorchoice, currentid=0, answer, maxid=1;
+	var noquestion, questions, presentquestion, buttonnum, f=0, fillorchoice, currentid=0, answer, maxid=1, audio, video, audioorvideo=null;
 	var result = [];
 	var result1 = [];
+	var file = [];
 	var iod=0;
-	// window.onbeforeunload = warning();
+	var times_played = 0,max_plays = 2;
 	$(document).ready(function(){
 	getquestion();
 	disablesubmit();
@@ -196,7 +97,6 @@
             $("#countdown").html((hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() ));
 						var ctime = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
 						setCookie("ctime", ctime, 0);
-            //element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
             setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
         }
     }
@@ -214,26 +114,10 @@
                     	return true;
                     }
         }
-    //     function getCookie(cname) {
-		//     var name = cname + "=";
-		//     var ca = document.cookie.split(';');
-		//         var c = ca[0];
-		//         var c1 = c.split('=');
-		//         return c1[1]+"=";
-		// }
 
 		function setCookie(cname, cvalue, exdays) {
     	document.cookie = cname + "=" + cvalue + ";";
 		}
-
-	// 	function warning()
-	//  {
-	// 		alert ('Detecting the page refresh using Java Script'); //you can put your code here.
-	// 		var elem = $("#countdown").html();
-	// 				alert(elem);
-	// if(f==0){
-	// 		    setCookie("id",null);}
-	//  }
 	// window.onbeforeunload = setTimeout(warning(),100);
 
 		function getCookie(cname) {
@@ -254,26 +138,15 @@
 							var session = getCookie("id");
 								$.get("/questions", {sessionId: session} ,function(data){
 									window.question = JSON.parse(data);
-									// alert(data);
 		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
-									// alert(window.noquestion);
-									// if(getCookie("ctime")==""){
-									// 	alert(getCookie("ctime"));
 									if(getCookie("ctime")==""){
 										Countdown( "countdown", window.question.Expiry, 0);
-										alert("empty");
 									}
 									else{
-										alert(getCookie("ctime"));
 										var ms;
 										ms = getCookie("ctime").split(":");
 										Countdown( "countdown", parseInt(ms[0]), parseInt(ms[1]));
 									}
-									// 	setCookie("ctime","",0);
-									// }
-									// else{
-									// 	document.getElementById(countdown).innerHTML = getCookie("ctime");
-									// }
 										nextfetchquestion(1);
 										disableprevious();
 										disablenext();
@@ -289,131 +162,43 @@
     //       }
 					// $(document).ready(function(){
 					// $("#button11").click(function(){
-    			// alert("The paragraph was clicked.");
 					// });
 					// });
 
       //     for(i=0;i<window.noquestion;i++){
       //     $(document).on('click','#button'+i,function(){
-      //     		alert($("#button"+i).text());
-      //     		//alert($(this).val());
       //     		window.buttonnum=$(this).val();
       //     		// save(2);
       //     		jumpfetchquestion(window.buttonnum);
 			//
-      //     		//alert(window.a);
 			// });
 			// }
 
-		function jumpfetchquestion(){
-        	var text, obj;
-					// var jnop=jumpnop;
-	        if(arguments[0]==1){
-	            disableprevious();
-	        }
-	        else {
-	            enableprevious();
-	        }
-        	//$("div").remove();//////have to change
-        	if(checksessionid()){
-				  for(var i=0;i<window.noquestion;i++){
-					for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
-						if(window.question.Question[i].SubQuestion[j].QuestionId==arguments[0]){
-							//addquestion("window.question.Question["+i+"].SubQuestion["+j+"]");
-							if(window.question.Question[i].File==""){
-								$("#description").text(window.question.Question[i].Description);
-								// $("#questionid").text(window.question.Question[i].SubQuestion[j].QuestionId);
-								$("#question").text(window.question.Question[i].SubQuestion[j].Question);
-									if(window.question.Question[i].SubQuestion[j].Choice==""){
-										//$("#fillintheblank").text("fill the field");
-										$("#fillintheblank").html('<input type="text" id="fill" onclick="enable()"></input>');
-										window.fillorchoice="fill";
-										disablenext();
-									}
-									else{
-									    window.fillorchoice="choice";
-											disablenext();
-											var cl = window.question.Question[i].SubQuestion[j].Choice.length();
-											for(var k=0;k<cl;k++){
-													$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
-											}
-										// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
-										// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
-										// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
-										// $("#choice3").html('<input type="radio" name="choice" id="3choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[3] +'</input>');
-									}
-							}
-							else{
-								var a1 = window.question.Question[i].File;
-								var n = a1.length;
-								if(a1.substring(n-3, n)=="mp3"){
-									//audio
-									// alert(a1);
-									$("#audiofile").html('<audio id="fileaudio" width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
-								}
-								else if(a1.substring(n-3, n)=="mp4"){
-									//video
-									$("#videofile").html('<video id="filevideo" width="640" height="264" controls>' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
-								}
-            					$("#description").text(window.question.Question[i].Description);
-            					// $("#questionid").text(window.question.Question[i].SubQuestion[j].QuestionId);
-            					$("#question").text(window.question.Question[i].SubQuestion[j].Question);
-            					if(window.question.Question[i].SubQuestion[j].Choice==""){
-										//$("#fillintheblank").text("fill the field");
-										$("#fillintheblank").html('<input type="text" id="fill" onclick="enable()"></input>');
-										window.fillorchoice="fill";
-										disablenext();
-									}
-									else{
-									window.fillorchoice="choice";
-									disablenext();
-									var cl = window.question.Question[i].SubQuestion[j].Choice.length();
-									for(var k=0;k<cl;k++){
-											$("#choice"+k).html('<input type="radio" name="choice" id="'+k+'"choice" onclick="enable() "><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
-									}
-									// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
-									// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
-									// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
-									// $("#choice3").html('<input type="radio" name="choice" id="3choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[3] +'</input>');
-									}
-							}
-            				///
-            				break;
-						}
-					}
-					break;
-				}
-			}
-			else{
-				alert("Times Up");
-			}
-        }
+			function verify() {
+    var x = document.getElementById("fill11");
+    if(x.value.length>0){
+			enable();
+		}
+}
 
 				function prefetchquestion(){
-
-					// $.get("/getanswer",{ sessionId: getCookie("id"), questionId:window.currentid } ,function(data)
-							//store data in local storage
 							window.answer = window.result[window.currentid];
 							if(window.fillorchoice=="fill"){
 								// $('input:text[name=fill1]')[window.answer].value = window.answer;
+								if(window.answer==""){
+									disablenext();
+								}
 								$('#fill11').val(window.answer);
 							}else{
-								// alert(window.answer);
 							    // var tmp=window.answer;
 							    // tmp=$("label:contains('"+tmp+"')").attr('id');//////////////
                   // var i = parseInt(tmp.split("choicelabel")[1]);////////////
 								$('input:radio[name=choice]')[window.answer].checked = true;/////////////////////
-}
-}
-
-				// $('body').bind('beforeunload',function(){
-   				//do something
-					// 	document.cookie="ctime="+
-				// });
+							}
+						}
 
         function nextfetchquestion(){
 					// warning();
-					// alert(parseInt($(".countdown").val()));
 					// $("div").hide();
 					disablenext();
         	var text, obj;
@@ -434,36 +219,31 @@
 	            enableprevious();
 	        }
 					if(window.iod<=window.noquestion){
-						// alert("true");
         	if(checksessionid()){
 				for(var i=0;i<window.question.Question.length;i++){
-					// alert(i);
-					// alert(window.noquestion+""+window.question.Question[1].SubQuestion[0].QuestionId);
-					// alert(window.question.Question[i].SubQuestion.length);
 					for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
 						if(window.question.Question[i].SubQuestion[j].QuestionId==window.iod){
 							if(window.question.Question[i].File==""){
+								$("#audiobutton").hide();
 								$("#fileaudio").remove();
 								$("#filevideo").remove();
-								// alert("dsfd"+window.iod);
 								$("#description").text(window.question.Question[i].Description);
 								$("#question").text(window.question.Question[i].SubQuestion[j].QuestionId+':'+window.question.Question[i].SubQuestion[j].Question);
 									if(window.question.Question[i].SubQuestion[j].Choice==null){
-										// alert(window.question.Question[i].SubQuestion[j].Choice+"asa");
 										$("#choice3").hide();
 										$("#choice2").hide();
 										$("#choice1").hide();
 										$("#choice0").hide();
 										$("#fillintheblank").show();
-										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
+										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onkeyup="verify()"></input>');
 										window.fillorchoice="fill";
 										if(arguments[0]==-1){
-										prefetchquestion();
-										enablenext();
+											enablenext();
+											prefetchquestion();
 										}
 										if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
-										prefetchquestion();
-										enablenext();
+											enablenext();
+											prefetchquestion();
 										}
 										break;
 									}
@@ -476,7 +256,9 @@
 											$("#choice0").show();
 											var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 											for(var k=0;k<cl;k++){
-													$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
+													// $("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
+													$("#choice"+k).html('<label id="'+k+'"choice"><input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">'+ window.question.Question[i].SubQuestion[j].Choice[k] +'</input></label>');
+													// $("#label").html('<label for="'+window.question.Question[i].SubQuestion[j].Choice[k]+'">'+window.question.Question[i].SubQuestion[j].Choice[k]+'</label>');
 											}
 											if(cl==3){
 												$("#choice3").hide();
@@ -500,41 +282,82 @@
 
 							}
 							else{
-								alert("dsfd");
-								$("#audiofile").remove();
-								$("#videfile").remove();
+								// $("#audiofile").remove();
+								// $("#videfile").remove();
+								// $("#audiobutton").show();
 								var a1 = window.question.Question[i].File;
 								var n = a1.length;
-								alert(a1);
 								if(a1.substring(n-3, n)=="mp3"){
-									alert(a1);
+									// window.max_plays+=2;
+									window.audioorvideo = "audio";
+									$("#videobutton").hide();
+									$("#audiobutton").show();
 									$("#audiofile").show();
-									$("#audiofile").html('<audio id="fileaudio" width="640" height="264" controls>' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
+									$("audiotag0").html('<div id="audiotag0"></div>');
+									$("#audiotag0").html('<audio id="fileaudio" width="640" height="264" >' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
+									////////////////
+									   ///////////////audio limit
+												var times_played = 0,max_plays = 2;
+									window.audio = document.getElementById("fileaudio");
+									$(document).ready(function(){
+									$("#audiobutton").click(function(){
+										if (times_played >= max_plays) {
+												times_played++;
+												window.file[a1]==1;
+										}
+										else{
+											if(window.file[a1]!=1){
+											times_played++;
+											window.audio.play();
+										}
+									}
+									});
+									});
+									////////////////////////
 								}
 								else if(a1.substring(n-3, n)=="mp4"){
-									alert(a1);
+									window.audioorvideo = "video";
+									$("#audiobutton").hide();
+									$("#videobutton").show();
 									$("#videofile").show();
-									$("#videofile").html('<video id="filevideo" width="640" height="264" controls>' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
+									$("videotag0").html('<div id="videotag0"></div>');
+									$("#videotag0").html('<video id="filevideo" width="640" height="264">' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
+									/////////////////
+									var times_played = 0,max_plays = 2;   ///////////////video limit
+									window.video = document.getElementById("filevideo");
+									$(document).ready(function(){
+									$("#videobutton").click(function(){
+										if (times_played >= max_plays) {
+												times_played++;
+												window.file[a1]=1;
+										}
+										else if(window.file[a1]!=1){
+											times_played++;
+											window.video.play();
+										}
+									});
+									});
 
 								}
             					$("#description").text(window.question.Question[i].Description);
             					$("#question").text(window.question.Question[i].SubQuestion[j].QuestionId+':'+window.question.Question[i].SubQuestion[j].Question);
             					if(window.question.Question[i].SubQuestion[j].Choice==null){
-												// alert(window.question.Question[i].SubQuestion[j].Choice+"asa");
 												$("#choice3").hide();
 												$("#choice2").hide();
 												$("#choice1").hide();
 												$("#choice0").hide();
 												$("#fillintheblank").show();
-										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onclick="enable()"></input>');
+										$("#fillintheblank").html('<input type="text" name="fill1" id="fill11" onkeyup="verify()"></input>');
 										window.fillorchoice="fill";
 										if(arguments[0]==-1){
-										prefetchquestion();
-										enablenext();
+											enablenext();
+											prefetchquestion();
+
 										}
 										if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
-										prefetchquestion();
-										enablenext();
+											enablenext();
+											prefetchquestion();
+
 										}
 										break;
 									}
@@ -548,7 +371,9 @@
 									$("#choice0").show();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 									for(var k=0;k<cl;k++){
-											$("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
+											// $("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
+											$("#choice"+k).html('<label id="'+k+'"choice"><input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">'+ window.question.Question[i].SubQuestion[j].Choice[k] +'</input></label>');
+											// $("#"+k+"choice").html('<label for="'+window.question.Question[i].SubQuestion[j].Choice[k]+'">'+window.question.Question[i].SubQuestion[j].Choice[k]+'</label>');
 									}
 									if(cl==3){
 										$("#choice3").hide();
@@ -579,7 +404,6 @@
 					// break;
 					// enablenext();
 				}
-				// alert("end0");
 			}
 			else{
 				alert("Times Up");
@@ -642,15 +466,28 @@
             // $('#submit').removeAttr('disabled');
 						$('#submit').show();
         }
-
-        // function datasend(){
-        //     var json = JSON.stringify({"QuestionId":window.iod,"Answer":document.getElementById()});
-        //         $.get("/questions", {updateJson:json} ,function(data){
-        //             //store data in local storage
-        //             <!--window.location = "/result";-->
-        //         });
-        // }
 				function save(){
+					// audio.stop();
+					if(window.currentid<window.noquestion){
+						if(audioorvideo==null){
+						$("#audiobutton").hide();
+						$("#audiofile").remove();
+						$( "#fileaudio" ).remove();
+						$("#videobutton").hide();
+						$("#videofile").remove();
+						$( "#filevideo" ).remove();
+					}
+					else if(audioorvideo=="audio"){
+						$("#audiobutton").hide();
+						$("#audiofile").remove();
+						$( "#fileaudio" ).remove();
+					}
+					else if(audioorvideo=="video"){
+						$("#videobutton").hide();
+						$("#videofile").remove();
+						$( "#filevideo" ).remove();
+					}
+				}
 					var w = window.currentid;
 					var a,a1,a11;
 
@@ -663,13 +500,9 @@
               // tmp='choicelabel'+tmp;///////////////
 							// a1= $(tmp).val();////////////////////////
 							// a1=$( "input:checked" ).val();
-							// alert(a1);
 							// a1=$( "input:checked" ).val();
 							a = $('input:radio[name="choice"]:checked').val();
 							for(var i=0;i<window.question.Question.length;i++){
-								// alert(i);
-								// alert(window.noquestion+""+window.question.Question[1].SubQuestion[0].QuestionId);
-								// alert(window.question.Question[i].SubQuestion.length);
 								for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
 									if(window.question.Question[i].SubQuestion[j].QuestionId==window.currentid){
 										a1 = window.question.Question[i].SubQuestion[j].Choice[a];
@@ -678,24 +511,20 @@
 							}
 
           }
-					// alert(a1+w);
 					var json = JSON.stringify({"QuestionId":w,"Answer":a1});
 					$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
-							//store data in local storage
 							window.result[w] = a;
 					});
 					if(arguments[0]==0){
                         nextfetchquestion(1);
 				    }
 				    else if(arguments[0]==-1){
-				        //time up
 								document.cookie = "id=done"+getCookie("id")+";";
 				        alert("oops time's up your answer are saved");
 				        window.location = "/results";
 				    }
 				    else if(arguments[0]==1){
 				        //submit button
-				        // alert("Thank You");
 								// enablesubmit();
 				        document.cookie = "id=done"+getCookie("id")+";";
 				        window.location = "/results";
@@ -714,18 +543,13 @@
 				    //     //submit button
 						// 		var elem = document.getElementById("countdown");
 						// 		var elementText = elem.innerText || elem.textContent
-				    //     alert(elementText);
 						// 		// enablesubmit();
 				    // }
 				    // else if(arguments[0]==2){
 				    //     //series button
-						// 		alert(window.buttonnum);
 				    //     // jumpfetchquestion(window.buttonnum);
 				    // }
 				}
-				// function disabletag(){
-					// "audiofile""videofile""description""questionid""question""fillintheblank""choice0"choice1""choice2""choice3"
-				// }
 
     </script>
 
@@ -742,7 +566,14 @@
         <div id="moveleft" class="container-fluid">
             <div class="row" >
                 <div class="col-md-8 " id="quesPlane" >
-										<div id="audiofile"></div>
+										<button id="audiobutton">Play Sound</button>
+										<button id="videobutton">Play video</button>
+										<div id="audiotag0">
+										<!-- <div id="audiofile"></div> -->
+									</div>
+									<div id="videotag0">
+									<!-- <div id="videofile"></div> -->
+								</div>
 										<br>
 										<div id="videofile"></div>
 										<br>
@@ -756,7 +587,7 @@
                     </div><br>
                     <div id="choice1">
                         <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
-                        <!--<input type="radio">sads<input>-->
+                        <!-- <label type="radio"><input> -->
                     </div><br>
                     <div id="choice2">
                         <!--<input type="radio" name="gender" value="male" checked> sada<br>-->

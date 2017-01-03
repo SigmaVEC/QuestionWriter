@@ -9,6 +9,7 @@
     <style>
     #naq{
       font-weight: bold;
+      font-size: 18px;
     }
 .branch{
   top: 80px;
@@ -24,7 +25,7 @@
 }
 #but{
   position:fixed;
-  top:500px;
+  top:30px;
   left:1100px;
 }
 #qna1{
@@ -32,13 +33,6 @@
   font-weight: bold;
   align-items: center;
 }
-/*#hrl{
-  top 300px;
-}*/
-/*.date12{
-  top:100px;
-  left:900px;
-}*/
 body {
     border: #E6E6FA;
     margin-right: 150px;
@@ -59,41 +53,23 @@ body {
       var a = dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear();
       $('.date12').text("Date:"+a);
       studentdetails();
-      // $("#a").append("<br>Correct Answer:"+"window.question.Question[i].SubQuestion[j].CAnswer");
-      // $("#a").append("<div>"+"window.question.Question[i].Description"+"</div>");
-      // $('.sname').text("Student's Name:");//+window.details.StudentName);
-      // $('.snumber').text("Student 's Register Number:");//+window.details.Number);
-      // $('.year').text("Year:");//+window.details.Year);
-      // $('.semester').text("Semester:");//+window.details.Semester);
-      // $('.branch').text("Department:);//"+window.details.Department);
-      // $('.section').text("Section:");//+window.details.Section);
-      // studentdetails();
       });
-// newDate.setDate(newDate.getDate() + 1);
-// $('#Date').text(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
-// $("#Date").html("dksjfhsdj");
-// document.getElementById("Date").innerHTML = dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear();
-    // function getdate(){
-      // var d = new Date();
-      // $("#date").html('Date:'+d.getDate()+'/'+d.getDay()+1+'/'+d.getFullYear());
-    // }
 
-function checksessionid(){
-  var sessi = getCookie("id");
-            if(sessi.length>69){
-              return false;
-            }
-            else {
-              return true;
-            }
-}
 function getCookie(cname) {
 var name = cname + "=";
 var ca = document.cookie.split(';');
-    var c = ca[0];
-    var c1 = c.split('=');
-    return c1[1]+"=";
+for(var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+    }
 }
+return "";
+}
+
     function fetchanswer(){
       var a1;
       // $("div").hide();
@@ -101,7 +77,6 @@ var ca = document.cookie.split(';');
       var n = ssession.length;
       var session = ssession.substring(8, n);
       $.get("/report", {sessionId: session} ,function(data){
-        alert(data);
         window.question = JSON.parse(data);
         a1 = window.noquestion = window.question.SubQuestion.length;
         s();
@@ -110,29 +85,26 @@ var ca = document.cookie.split(';');
     function s(){
     for(var i=0;i<window.noquestion;i++){
             $(".a").append("<div id=naq>"+window.question.SubQuestion[i].QuestionId+":"+window.question.SubQuestion[i].Question+"</div>");
-            if(window.question.SubQuestion[i].Choice.length!=null){
-            for(j=0;j<window.question.SubQuestion[i].Choice.length;j++){
-            $(".a").append("<div>"+window.question.SubQuestion[i].Choice[j]+"</div>");
-          }
-        }
-            $(".a").append("<div>Answer : "+window.question.SubQuestion[i].Answer+"</div>");
-            $(".a").append("<div>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</div>");
+        //     if(window.question.SubQuestion[i].Choice.length!=null){
+        //     for(j=0;j<window.question.SubQuestion[i].Choice.length;j++){
+        //     $(".a").append("<div>"+window.question.SubQuestion[i].Choice[j]+"</div>");
+        //   }
+        // }
+            if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
+              $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
+              $(".a").append('<div> <mark style="background-color:green;">Your Answer : "'+window.question.SubQuestion[i].Answer+'"</div>');
+            }
+            else{
+              $(".a").append('<div> <mark style="background-color:red;">Your Answer is Wrong</mark></div>');//////////
+              $(".a").append('<div> <mark style="background-color:red;">Your Answer : "'+window.question.SubQuestion[i].Answer+'"</div>');
+            }
+            // $(".a").append("<div>Your Answer : "+window.question.SubQuestion[i].Answer+"</div>");
+            $(".a").append("<div><strong>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</strong></div>");
             if(window.question.SubQuestion[i].Reason!=""){
               $(".a").append("<div>Reason : "+window.question.SubQuestion[i].Reason+"</div>");
             }
           }
         }
-                // $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                // $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                // $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
-              // else{
-                  // var cl = window.question.Question[i].SubQuestion[j].Choice.length;
-                  // for(var k=0;k<cl;k++){
-                      // $("#a"+k).append('a:' + window.question.Question[i].SubQuestion[j].Choice[k]+'     ');
-                  // }
-                  // $("#a").append("<br>Correct Answer:"+window.question.Question[i].SubQuestion[j].CAnswer);
-                  // $("#a").append("<br>Student Answer:"+window.question.Question[i].SubQuestion[j].SAnswer);
-                  // $("#a").append("<br>Explain:"+window.question.Question[i].SubQuestion[j].explain);
 
 
       function studentdetails(){
@@ -145,12 +117,20 @@ var ca = document.cookie.split(';');
         });
       }
         function s1(){
+          var score=0;
         $('.sname').text("Student's Name : "+window.details.Name);
         $('.snumber').text("Student 's Register Number : "+window.details.RegisterNumber);
         $('.branch').text("Department : "+window.details.Department);
         $('.year').text("Year : "+window.details.Year);
         $('.semester').text("Semester : "+window.details.Semester);
-        $('.academicyear').text("Academic Year :"+window.details.AcademicYear+"-"+(window.details.AcademicYear+4));
+        $('.academicyear').text("Academic Year :"+window.details.AcademicYear);////////////
+        // $('.totalmark').text("Total Mark : "+window.details.TotalMark);
+        for(var i=0;i<window.noquestion;i++){
+          if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
+            score++;
+          }
+        }
+        $('.smark').text("Student Mark : "+score);
         fetchanswer();
       }
 
@@ -170,7 +150,7 @@ var ca = document.cookie.split(';');
 <div class="semester"></div>
 <div class="branch"></div>
 <div class="academicyear"></div>
-<div class="totalmarks"></div>
+<div class="totalmark"></div>
 <div class="smark"></div>
 <hr id="hrl">
 <div id="qna1"><center>Questions And Answers</center></div>

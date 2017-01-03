@@ -97,6 +97,17 @@ function setCookie(cname, cvalue, exdays) {
                 document.getElementById(fields[i]).focus();
                 break;
             }
+              if((fields[i]!="last_name")&&(isNaN(document.getElementById(fields[i]).value))){
+                focus=1;
+              }
+              else if(((fields[i]=="last_name")&&(!(isNaN(document.getElementById(fields[i]).value))))){
+                focus=1;
+              }
+              else{
+                focus=0;
+                document.getElementById(fields[i]).focus();
+                break;
+              }
         }
         if(focus==1){
             getsessionid();
@@ -104,11 +115,11 @@ function setCookie(cname, cvalue, exdays) {
     }
     function getsessionid(){
         var studentdetails = JSON.stringify({"Name":document.getElementById("first_name").value,
-        "RegisterNumber":document.getElementById("last_name").value,
+        "RegisterNumber":parseInt(document.getElementById("last_name").value),
         "Department":document.getElementById("display_name").value,
-        "AcademicYear":parseInt(document.getElementById("email").value),
-        "Year":parseInt(document.getElementById("password").value),
-        "Semester":parseInt(document.getElementById("password_confirmation").value)
+        "AcademicYear":document.getElementById("email").value,
+        "Year":document.getElementById("password").value,
+        "Semester":document.getElementById("password_confirmation").value
         });
         $.get("/login", { studentJson: studentdetails }, function(result){
             var sess = JSON.parse(result);
@@ -119,7 +130,6 @@ function setCookie(cname, cvalue, exdays) {
                  var t = new Date();
                  t.setTime(t.getTime() + 60*60*24);
                  var expire = "expire="+ t.toUTCString();
-                //  alert(sess.SessionId);
                  document.cookie = "id=" + sess.SessionId + ";" + expire + ";";
                  window.location = "/dashboard";
             }
@@ -150,13 +160,13 @@ function setCookie(cname, cvalue, exdays) {
             <div class="form-group">
                 <input type="text" list="departmentlist" title="Enter Your Department" name="display_name" id="display_name" class="form-control input-lg" placeholder="Department" tabindex="3">
                 <datalist id='departmentlist'>
-                <option label='CSE' value='Computer Science & Engineering'>
+                <option label='CSE' value='Computer Science and Engineering'>
                 <option label='IT' value='Information Technology'>
                 <option label='MECH' value='Mechanical Engineering'>
-                <option label='EEE' value='Electrical & Electronic Engineering'>
-                <option label='ECE' value='Electronics & Communication Engineering'>
+                <option label='EEE' value='Electrical and Electronic Engineering'>
+                <option label='ECE' value='Electronics and Communication Engineering'>
                 <option label='CIVIL' value='Civil Engineering'>
-                <option label='EIE' value='Electronics & Instrumentation Engineering'>
+                <option label='EIE' value='Electronics and Instrumentation Engineering'>
                 <option label='PROD' value='Production Engineering'>
                 <option label='AUTO' value='Automobile Engineering'>
                 </datalist>
