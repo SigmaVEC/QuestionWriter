@@ -115,14 +115,14 @@ function setCookie(cname, cvalue, exdays) {
     }
     function getsessionid(){
         var studentdetails = JSON.stringify({"Name":document.getElementById("first_name").value,
-        "RegisterNumber":parseInt(document.getElementById("last_name").value),
+        "RegisterNumber":document.getElementById("last_name").value,
         "Department":document.getElementById("display_name").value,
         "AcademicYear":document.getElementById("email").value,
         "Year":document.getElementById("password").value,
         "Semester":document.getElementById("password_confirmation").value
         });
         $.get("/login", { studentJson: studentdetails }, function(result){
-            var sess = JSON.parse(result);
+            var sess = result;
             if(sess.SessionId==""){
             alert("fill all the field");
             }

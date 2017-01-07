@@ -24,7 +24,7 @@ var (
 )
 
 type RegisterRequest struct {
-	RegisterNumber int
+	RegisterNumber string
 	Name           string
 	AcademicYear   string
 	Department     string
@@ -87,9 +87,9 @@ func resultsHandler(w http.ResponseWriter, r *http.Request) {
 	displayWebPage(w, "Result.html")
 }
 
-func getQuestion(question string, data QuestionListResponse) (int, error) {
+func getQuestion(question string, file string, data QuestionListResponse) (int, error) {
 	for i := 0; i < len(data.Question); i++ {
-		if data.Question[i].Description == question {
+		if data.Question[i].Description == question && data.Question[i].File == file {
 			return i, nil
 		}
 	}
@@ -140,6 +140,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester)
 
 			if err == nil {
+				w.Header().Set("Content-Type", "application/json")
 				json.NewEncoder(w).Encode(reply)
 			} else {
 				io.WriteString(w, emptyJson)
@@ -169,7 +170,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 				var questionId int
 				var data [3]string
 				dbQuestions.Scan(&questionId, &data[0], &data[1], &data[2])
-				i, err := getQuestion(data[0], reply)
+				i, err := getQuestion(data[0], data[1], reply)
 
 				if err == nil {
 					subQuestion, err := generateSubQuestion(questionId, data[2])
@@ -192,6 +193,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(reply)
 		} else {
 			io.WriteString(w, emptyJson)
@@ -225,6 +227,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 					_, err = db.Exec("UPDATE StudentAnswers SET Answer=? WHERE SessionId=? AND QuestionId=?", update.Answer, sessionId, update.QuestionId)
 
 					if err == nil {
+						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(struct {
 							Message string
 						}{ Message: "Success" })
@@ -235,6 +238,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 					_, err = db.Exec("INSERT INTO StudentAnswers VALUES(?,?,?)", sessionId, update.QuestionId, update.Answer)
 
 					if err == nil {
+						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(struct {
 							Message string
 						}{ Message: "Success" })
@@ -268,6 +272,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			err = row.Scan(&answer)
 
 			if err == nil {
+				w.Header().Set("Content-Type", "application/json")
 				json.NewEncoder(w).Encode(QuestionUpdateRequest {
 					QuestionId: question,
 					Answer: answer })
@@ -319,6 +324,7 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(ResultAnalysisResponse {
 				SubQuestion: subQuestionArray })
 		} else {
@@ -335,17 +341,17 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	err := dbSession.Scan(&sessionId)
 
 	if err == nil && len(sessionId) != 0 {
-		var stringData [5]string
-		var intData [1]int
+		var data [6]string
 		row := db.QueryRow("SELECT StudentId, Name, AcademicYear, Department, Year, Semester FROM Session WHERE SessionId=?", sessionId)
-		err = row.Scan(&intData[0], &stringData[0], &stringData[1], &stringData[2], &stringData[3], &stringData[4])
+		err = row.Scan(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5])
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(RegisterRequest {
-			RegisterNumber: intData[0],
-			Name: stringData[0],
-			AcademicYear: stringData[1],
-			Department: stringData[2],
-			Year: stringData[3],
-			Semester: stringData[4] })
+			RegisterNumber: data[0],
+			Name: data[1],
+			AcademicYear: data[2],
+			Department: data[3],
+			Year: data[4],
+			Semester: data[5] })
 	}
 }
 
@@ -355,8 +361,7 @@ func main() {
 	defer db.Close()
 
 	if dbErr == nil {
-		fs := http.FileServer(http.Dir("./static"))
-		http.Handle("/", fs)
+		http.Handle("/", http.FileServer(http.Dir("./static")))
 		http.HandleFunc("/register", registerHandler)
 		http.HandleFunc("/dashboard", dashboardHandler)
 		http.HandleFunc("/results", resultsHandler)
@@ -366,12 +371,8 @@ func main() {
 		http.HandleFunc("/getanswer", getAnswerHandler)
 		http.HandleFunc("/studentDetails", studentDetailsHandler)
 		http.HandleFunc("/report", reportHandler)
-		http.ListenAndServe(":8001", nil)
+		http.ListenAndServe(":8000", nil)
 	} else {
 		panic(dbErr)
 	}
 }
-
-
-////////////////////
-//need to make change in sql database in session table only register number is int other are string;

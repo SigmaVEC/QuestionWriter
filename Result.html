@@ -77,7 +77,7 @@ return "";
       var n = ssession.length;
       var session = ssession.substring(8, n);
       $.get("/report", {sessionId: session} ,function(data){
-        window.question = JSON.parse(data);
+        window.question = data;
         a1 = window.noquestion = window.question.SubQuestion.length;
         s();
       });
@@ -112,7 +112,7 @@ return "";
         var n = ssession.length;
         var session = ssession.substring(8, n);
         $.get("/studentDetails", {sessionId: session} ,function(data){
-          window.details = JSON.parse(data);
+          window.details = data;
           s1();
         });
       }

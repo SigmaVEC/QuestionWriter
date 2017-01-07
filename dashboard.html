@@ -137,7 +137,7 @@
 						function getquestion(){
 							var session = getCookie("id");
 								$.get("/questions", {sessionId: session} ,function(data){
-									window.question = JSON.parse(data);
+									window.question = data;
 		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
 									if(getCookie("ctime")==""){
 										Countdown( "countdown", window.question.Expiry, 0);
