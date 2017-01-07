@@ -11,6 +11,7 @@ import (
 	"io"
 	"errors"
 	"strconv"
+	"time"
 )
 
 var (
@@ -68,6 +69,18 @@ type SubQuestionResultModel struct {
 
 type ResultAnalysisResponse struct {
 	SubQuestion []SubQuestionResultModel
+}
+
+func isValidSession(sessionId string) bool {
+	var timeout time.Time
+	dbSession := db.QueryRow("SELECT SessionId, Timeout FROM Session WHERE SessionId=?", sessionId)
+	err := dbSession.Scan(&sessionId, &timeout)
+
+	if err == nil && len(sessionId) != 0 && time.Now().Before(timeout) {
+		return true
+	} else {
+		return false
+	}
 }
 
 func displayWebPage(w http.ResponseWriter, file string) {
@@ -137,7 +150,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester)
+			var duration time.Duration = sessionExpiry * time.Minute
+			timeout := time.Now().Add(duration)
+			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester, timeout)
 
 			if err == nil {
 				w.Header().Set("Content-Type", "application/json")
@@ -155,10 +170,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
-	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	err := dbSession.Scan(&sessionId)
 
-	if err == nil && len(sessionId) != 0 {
+	if isValidSession(sessionId) {
 		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions");
 		defer dbQuestions.Close()
 
@@ -206,13 +219,11 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 	sessionId := r.FormValue("sessionId")
 	updateJson := r.FormValue("updateJson")
-	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	err := dbSession.Scan(&sessionId)
 
-	if err == nil && len(sessionId) != 0 {
+	if isValidSession(sessionId) {
 		data := []byte(updateJson)
 		var update QuestionUpdateRequest
-		err = json.Unmarshal(data, &update)
+		err := json.Unmarshal(data, &update)
 
 		if err == nil {
 			var temp int
@@ -260,10 +271,8 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	questionId := r.FormValue("questionId")
-	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	err := dbSession.Scan(&sessionId)
 
-	if err == nil && len(sessionId) != 0 {
+	if isValidSession(sessionId) {
 		question, err := strconv.Atoi(questionId)
 
 		if err == nil {
@@ -289,13 +298,11 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 func reportHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
-	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	err := dbSession.Scan(&sessionId)
 
-	if err == nil && len(sessionId) != 0 {
+	if isValidSession(sessionId) {
 		var questionLength int
 		row := db.QueryRow("SELECT MAX(QuestionId) FROM Questions")
-		err = row.Scan(&questionLength)
+		err := row.Scan(&questionLength)
 
 		if err == nil {
 			var subQuestionArray []SubQuestionResultModel
@@ -337,21 +344,26 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 
 func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
-	dbSession := db.QueryRow("SELECT SessionId FROM Session WHERE SessionId=?", sessionId)
-	err := dbSession.Scan(&sessionId)
 
-	if err == nil && len(sessionId) != 0 {
+	if isValidSession(sessionId) {
 		var data [6]string
 		row := db.QueryRow("SELECT StudentId, Name, AcademicYear, Department, Year, Semester FROM Session WHERE SessionId=?", sessionId)
-		err = row.Scan(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5])
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(RegisterRequest {
-			RegisterNumber: data[0],
-			Name: data[1],
-			AcademicYear: data[2],
-			Department: data[3],
-			Year: data[4],
-			Semester: data[5] })
+		err := row.Scan(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5])
+
+		if err == nil {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(RegisterRequest {
+				RegisterNumber: data[0],
+				Name: data[1],
+				AcademicYear: data[2],
+				Department: data[3],
+				Year: data[4],
+				Semester: data[5] })
+		} else {
+			io.WriteString(w, emptyJson)
+		}
+	} else {
+		io.WriteString(w, emptyJson)
 	}
 }
 
