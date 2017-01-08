@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"html/template"
 	"io"
@@ -72,11 +73,11 @@ type ResultAnalysisResponse struct {
 }
 
 func isValidSession(sessionId string) bool {
-	var timeout time.Time
+	var timeout mysql.NullTime
 	dbSession := db.QueryRow("SELECT SessionId, Timeout FROM Session WHERE SessionId=?", sessionId)
 	err := dbSession.Scan(&sessionId, &timeout)
 
-	if err == nil && len(sessionId) != 0 && time.Now().Before(timeout) {
+	if err == nil && len(sessionId) != 0 && timeout.Valid && time.Now().Before(timeout.Time) {
 		return true
 	} else {
 		return false
@@ -150,9 +151,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			duration := time.Duration(float64(sessionExpiry) * time.Minute.Minutes())
-			timeout := time.Now().Add(duration)
-			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester, timeout)
+			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?, NOW() + INTERVAL ? MINUTE)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester, sessionExpiry)
 
 			if err == nil {
 				w.Header().Set("Content-Type", "application/json")
