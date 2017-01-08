@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="js/jquerymin.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/bootstrap-theme.css"/>
+		<script src="js/jquery.js"></script>
+		<script src="js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="js/bspage.js"></script>
+    <meta charset="UTF-8">
+    <title>Questions</title>
+    <style>
+    #fieldset1 {
+      width:0px;
+    }
+    #choice{
+      margin-left: 80px;
+    }
+    #addchoice{
+      margin-left: 180px;
+    }
+    #nextquestion{
+      margin-left: 180px;
+    }
+    #nextsubquestion{
+      margin-left: 180px;
+    }
+    #done{
+      margin-left: 180px;
+    }
+    #moveleft {
+      margin-left: 80px;
+    }
+    /*#insertchoice{
+      margin-left: 80px;
+    }*/
+    </style>
+    <script>
+      var nq, nsq, d, ac=0;
+      $( document ).ready(function() {
+      $("#done").click(function(){
+        // window.location="/display"
+      });
+      $("#nextquestion").click(function(){
+        // window.nq;
+        // window.location="/enterquestion"
+      });
+      $("#nextsubquestion").click(function(){
+        // window.nsq;
+        // window.location="/enterquestion"
+      });
+      $("#addchoice").click(function(){
+        window.ac++;
+        // $("#choice"+k).html('<label id="'+k+'"choice"><input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">'+ window.question.Question[i].SubQuestion[j].Choice[k] +'</input></label>');
+        $("#insertchoice").append('choice '+window.ac+' : <input type="text" name="'+window.ac+'"choice" id="choice"'+window.ac+'"></input></br></br>');
+        // window.location="/enterquestion"
+      });
+      });
+    </script>
+</head>
+<body style="background-color:#E6E6FA;">
+  <div id="moveleft">
+  </br>
+  <div id="upload">
+    Upload File : <button>File Upload</button>
+  </div>
+</br>
+<div>
+   <fieldset id="fieldset1">
+  <legend>Question</legend><textarea rows="4" cols="50">
+</textarea>
+ </fieldset>
+</div>
+</br>
+<div id="insertchoice">
+  <!-- choice :<input type="text" id="choice"></input> -->
+</div>
+</br>
+<div>
+  <button id="addchoice">Add Choice</button>
+</div>
+</br>
+<div>
+  <button id="nextsubquestion">Next SubQuestion</button>
+</div>
+</br>
+<div>
+  <button id="nextquestion">Next Question</button>
+</div>
+</br>
+<div>
+  <button id="done">Done</button>
+</div>
+</div>
+</body>
+</html>

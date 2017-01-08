@@ -71,6 +71,23 @@
 	var file = [];
 	var iod=0;
 	var times_played = 0,max_plays = 2;
+	function settimenow(){
+		var today = new Date();
+		var h= today.getHours();
+	  var m = today.getMinutes();
+	  var s = today.getSeconds();
+		var stime = h+":"+m+":"+s;
+		setCookie("stime", stime, 0);
+}
+
+function getcurrenttimenow(){
+	var today = new Date();
+	var h1 = today.getHours();
+	var m1 = today.getMinutes();
+	var s1 = today.getSeconds();
+	var ptime = h1+":"+m1+":"+s1;
+	return ptime;
+}
 	$(document).ready(function(){
 	getquestion();
 	disablesubmit();
@@ -140,12 +157,41 @@
 									window.question = data;
 		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
 									if(getCookie("ctime")==""){
+										settimenow();
 										Countdown( "countdown", window.question.Expiry, 0);
 									}
 									else{
-										var ms;
-										ms = getCookie("ctime").split(":");
-										Countdown( "countdown", parseInt(ms[0]), parseInt(ms[1]));
+										var cms;
+										var sms;
+										var nms = [];
+										sms = getCookie("stime").split(":");
+										cms = getCookie("ctime").split(":");
+										var pms=getcurrenttimenow().split(":");
+										// Math.abs();
+										nms[0] = parseInt(sms[0])-parseInt(pms[0]);
+										nms[1] = Math.abs(parseInt(sms[1])-parseInt(pms[1]));
+										nms[2] = Math.abs(parseInt(sms[2])-parseInt(pms[2]));
+										alert(parseInt(sms[0])-parseInt(pms[0]));
+										if(nms[0] >= 0){
+											nms[0] = nms[0] * 60;
+											nms[1] = nms[0] + nms[1];
+											alert(nms[1]);
+											alert(nms[2]);
+											if((nms[1]-window.question.Expiry)>0){
+												alert("timesup!");
+												window.location="/result";
+											}
+											else{
+													alert(window.question.Expiry);
+													// Countdown( "countdown", Math.abs(parseInt(nms[1]-cms[0])), Math.abs(parseInt(nms[2]-cms[1])));
+													Countdown( "countdown", parseInt(window.question.Expiry-nms[1]-1), parseInt(60-nms[2]));
+											}
+										}
+										else{
+											alert("timesup!");
+											window.location="/result";
+										}
+										// Countdown( "countdown", parseInt(cms[0]), parseInt(cms[1]));
 									}
 										nextfetchquestion(1);
 										disableprevious();
