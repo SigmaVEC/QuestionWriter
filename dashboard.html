@@ -188,12 +188,18 @@
 								if(window.answer==""){
 									disablenext();
 								}
+								else {
+								enablenext();
 								$('#fill11').val(window.answer);
+								}
 							}else{
-							    // var tmp=window.answer;
-							    // tmp=$("label:contains('"+tmp+"')").attr('id');//////////////
-                  // var i = parseInt(tmp.split("choicelabel")[1]);////////////
-								$('input:radio[name=choice]')[window.answer].checked = true;/////////////////////
+                               if(window.answer==undefined){
+								disablenext();
+								    }
+                                    else {
+                                    enablenext();
+								    $('input:radio[name=choice]')[window.answer].checked = true;/////////////////////
+								    }
 							}
 						}
 

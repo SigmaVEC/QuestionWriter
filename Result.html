@@ -40,7 +40,7 @@ body {
 }
     </style>
     <script>
-    var question, details, noquestion;
+    var question, details, noquestion, score=0;
     function myFunction() {
         window.print();
     }
@@ -91,6 +91,7 @@ return "";
         //   }
         // }
             if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
+              window.score++;
               $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
               $(".a").append('<div> <mark style="background-color:green;">Your Answer : "'+window.question.SubQuestion[i].Answer+'"</div>');
             }
@@ -104,6 +105,7 @@ return "";
               $(".a").append("<div>Reason : "+window.question.SubQuestion[i].Reason+"</div>");
             }
           }
+          $('.smark').text("Student Mark : "+window.score);
         }
 
 
@@ -117,20 +119,19 @@ return "";
         });
       }
         function s1(){
-          var score=0;
         $('.sname').text("Student's Name : "+window.details.Name);
         $('.snumber').text("Student 's Register Number : "+window.details.RegisterNumber);
         $('.branch').text("Department : "+window.details.Department);
         $('.year').text("Year : "+window.details.Year);
         $('.semester').text("Semester : "+window.details.Semester);
         $('.academicyear').text("Academic Year :"+window.details.AcademicYear);////////////
-        // $('.totalmark').text("Total Mark : "+window.details.TotalMark);
-        for(var i=0;i<window.noquestion;i++){
-          if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
-            score++;
-          }
-        }
-        $('.smark').text("Student Mark : "+score);
+        $('.totalmark').text("Total Mark : "+window.details.TotalMark);
+        //for(var i=0;i<window.noquestion;i++){
+          //if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
+           // window.score++;
+         // }
+        //}
+       // $('.smark').text("Student Mark : "+window.score);
         fetchanswer();
       }
 
