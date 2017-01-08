@@ -171,18 +171,14 @@ function getcurrenttimenow(){
 										nms[0] = parseInt(sms[0])-parseInt(pms[0]);
 										nms[1] = Math.abs(parseInt(sms[1])-parseInt(pms[1]));
 										nms[2] = Math.abs(parseInt(sms[2])-parseInt(pms[2]));
-										alert(parseInt(sms[0])-parseInt(pms[0]));
 										if(nms[0] >= 0){
 											nms[0] = nms[0] * 60;
 											nms[1] = nms[0] + nms[1];
-											alert(nms[1]);
-											alert(nms[2]);
 											if((nms[1]-window.question.Expiry)>0){
 												alert("timesup!");
 												window.location="/result";
 											}
 											else{
-													alert(window.question.Expiry);
 													// Countdown( "countdown", Math.abs(parseInt(nms[1]-cms[0])), Math.abs(parseInt(nms[2]-cms[1])));
 													Countdown( "countdown", parseInt(window.question.Expiry-nms[1]-1), parseInt(60-nms[2]));
 											}
@@ -654,7 +650,7 @@ function getcurrenttimenow(){
                     <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
 										<div id="inst"></div>
                 	<div id="createbutton" ></div>
-                	<div id="countdown" class="rect1">asdsa</div>
+                	<div id="countdown" class="rect1">Time left</div>
 					<button class="btn btn-primary" id="submit" onclick="save(1)">Submit</button>
                 </div>
             </div>
