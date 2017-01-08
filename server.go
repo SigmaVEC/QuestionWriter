@@ -1,27 +1,27 @@
 package main
 
 import (
-	"net/http"
-	"html/template"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
-	"encoding/json"
 	"crypto/rand"
+	"database/sql"
 	"encoding/base64"
-	"io"
+	"encoding/json"
 	"errors"
+	_ "github.com/go-sql-driver/mysql"
+	"html/template"
+	"io"
+	"net/http"
 	"strconv"
 	"time"
 )
 
 var (
 	sessionKeyLength = 50 //In bytes
-	sessionExpiry = 60 //In minutes
-	emptyJson = "{}"
-	db *sql.DB
-	user string = "test"
-	password string = "test"
-	database string = "QuestionWriter"
+	sessionExpiry    = 60 //In minutes
+	emptyJson        = "{}"
+	db               *sql.DB
+	user             string = "test"
+	password         string = "test"
+	database         string = "QuestionWriter"
 )
 
 type RegisterRequest struct {
@@ -150,7 +150,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			reply.SessionId = base64.URLEncoding.EncodeToString(b)
-			var duration time.Duration = sessionExpiry * time.Minute
+			duration := time.Duration(float64(sessionExpiry) * time.Minute.Minutes())
 			timeout := time.Now().Add(duration)
 			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?, ?)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester, timeout)
 
@@ -172,7 +172,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 
 	if isValidSession(sessionId) {
-		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions");
+		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions")
 		defer dbQuestions.Close()
 
 		if err == nil {
@@ -194,7 +194,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 						io.WriteString(w, emptyJson)
 					}
 				} else {
-					question := QuestionModel{ Description: data[0], File: data[1] }
+					question := QuestionModel{Description: data[0], File: data[1]}
 					subQuestion, err := generateSubQuestion(questionId, data[2])
 
 					if err == nil {
@@ -216,7 +216,7 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
+func updateQuestionHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	updateJson := r.FormValue("updateJson")
 
@@ -241,7 +241,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(struct {
 							Message string
-						}{ Message: "Success" })
+						}{Message: "Success"})
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -252,7 +252,7 @@ func updateQuestionHandler(w http.ResponseWriter, r * http.Request) {
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(struct {
 							Message string
-						}{ Message: "Success" })
+						}{Message: "Success"})
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -282,9 +282,9 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 			if err == nil {
 				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(QuestionUpdateRequest {
+				json.NewEncoder(w).Encode(QuestionUpdateRequest{
 					QuestionId: question,
-					Answer: answer })
+					Answer:     answer})
 			} else {
 				io.WriteString(w, emptyJson)
 			}
@@ -317,12 +317,12 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 					err = row.Scan(&studentAnswer)
 
 					if err == nil {
-						subQuestionArray = append(subQuestionArray, SubQuestionResultModel {
-							QuestionId: i,
-							Question: subQuestion,
-							Answer: studentAnswer,
+						subQuestionArray = append(subQuestionArray, SubQuestionResultModel{
+							QuestionId:    i,
+							Question:      subQuestion,
+							Answer:        studentAnswer,
 							CorrectAnswer: answer,
-							Reason: reason })
+							Reason:        reason})
 					} else {
 						io.WriteString(w, emptyJson)
 					}
@@ -332,8 +332,8 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(ResultAnalysisResponse {
-				SubQuestion: subQuestionArray })
+			json.NewEncoder(w).Encode(ResultAnalysisResponse{
+				SubQuestion: subQuestionArray})
 		} else {
 			io.WriteString(w, emptyJson)
 		}
@@ -352,13 +352,13 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err == nil {
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(RegisterRequest {
+			json.NewEncoder(w).Encode(RegisterRequest{
 				RegisterNumber: data[0],
-				Name: data[1],
-				AcademicYear: data[2],
-				Department: data[3],
-				Year: data[4],
-				Semester: data[5] })
+				Name:           data[1],
+				AcademicYear:   data[2],
+				Department:     data[3],
+				Year:           data[4],
+				Semester:       data[5]})
 		} else {
 			io.WriteString(w, emptyJson)
 		}
@@ -369,7 +369,7 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var dbErr error
-	db, dbErr = sql.Open("mysql", user + ":" + password + "@/" + database)
+	db, dbErr = sql.Open("mysql", user+":"+password+"@/"+database)
 	defer db.Close()
 
 	if dbErr == nil {
