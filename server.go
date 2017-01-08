@@ -72,13 +72,21 @@ type ResultAnalysisResponse struct {
 	SubQuestion []SubQuestionResultModel
 }
 
-func isValidSession(sessionId string) bool {
+func isValidSession(sessionId string, isTimeoutConsidered bool) bool {
 	var timeout mysql.NullTime
 	dbSession := db.QueryRow("SELECT SessionId, Timeout FROM Session WHERE SessionId=?", sessionId)
 	err := dbSession.Scan(&sessionId, &timeout)
 
-	if err == nil && len(sessionId) != 0 && timeout.Valid && time.Now().Before(timeout.Time) {
-		return true
+	if err == nil && len(sessionId) != 0 {
+		if isTimeoutConsidered {
+			if timeout.Valid && time.Now().Before(timeout.Time) {
+				return true
+			} else {
+				return false
+			}
+		} else {
+			return true
+		}
 	} else {
 		return false
 	}
@@ -170,7 +178,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 
-	if isValidSession(sessionId) {
+	if isValidSession(sessionId, true) {
 		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions")
 		defer dbQuestions.Close()
 
@@ -219,7 +227,7 @@ func updateQuestionHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	updateJson := r.FormValue("updateJson")
 
-	if isValidSession(sessionId) {
+	if isValidSession(sessionId, true) {
 		data := []byte(updateJson)
 		var update QuestionUpdateRequest
 		err := json.Unmarshal(data, &update)
@@ -271,7 +279,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 	questionId := r.FormValue("questionId")
 
-	if isValidSession(sessionId) {
+	if isValidSession(sessionId, true) {
 		question, err := strconv.Atoi(questionId)
 
 		if err == nil {
@@ -298,7 +306,7 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 func reportHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 
-	if isValidSession(sessionId) {
+	if isValidSession(sessionId, false) {
 		var questionLength int
 		row := db.QueryRow("SELECT MAX(QuestionId) FROM Questions")
 		err := row.Scan(&questionLength)
@@ -344,7 +352,7 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.FormValue("sessionId")
 
-	if isValidSession(sessionId) {
+	if isValidSession(sessionId, false) {
 		var data [6]string
 		row := db.QueryRow("SELECT StudentId, Name, AcademicYear, Department, Year, Semester FROM Session WHERE SessionId=?", sessionId)
 		err := row.Scan(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5])
