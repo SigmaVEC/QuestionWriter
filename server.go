@@ -9,21 +9,23 @@ import (
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"html/template"
-	"io"
 	"net/http"
 	"strconv"
 	"time"
 )
 
 var (
-	sessionKeyLength = 50 //In bytes
-	sessionExpiry    = 60 //In minutes
-	emptyJson        = "{}"
+	sessionKeyLength int = 50 //In bytes
+	sessionExpiry    int = 60 //In minutes
 	db               *sql.DB
 	user             string = "test"
 	password         string = "test"
 	database         string = "QuestionWriter"
 )
+
+type MessageModel struct {
+	Message string
+}
 
 type RegisterRequest struct {
 	RegisterNumber string
@@ -70,6 +72,11 @@ type SubQuestionResultModel struct {
 
 type ResultAnalysisResponse struct {
 	SubQuestion []SubQuestionResultModel
+}
+
+func writeJson(w http.ResponseWriter, jsonData interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jsonData)
 }
 
 func isValidSession(sessionId string, isTimeoutConsidered bool) bool {
@@ -162,16 +169,18 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			_, err = db.Exec("INSERT INTO Session VALUES (?, ?, ?, ?, ?, ?, ?, NOW() + INTERVAL ? MINUTE)", reply.SessionId, student.RegisterNumber, student.Name, student.AcademicYear, student.Department, student.Year, student.Semester, sessionExpiry)
 
 			if err == nil {
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(reply)
+				writeJson(w, reply)
 			} else {
-				io.WriteString(w, emptyJson)
+				writeJson(w, MessageModel{
+					Message: "Error"})
 			}
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error creating Session ID"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid JSON format"})
 	}
 }
 
@@ -198,7 +207,8 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 					if err == nil {
 						reply.Question[i].SubQuestion = append(reply.Question[i].SubQuestion, subQuestion)
 					} else {
-						io.WriteString(w, emptyJson)
+						writeJson(w, MessageModel{
+							Message: "Error"})
 					}
 				} else {
 					question := QuestionModel{Description: data[0], File: data[1]}
@@ -208,18 +218,20 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 						question.SubQuestion = append(question.SubQuestion, subQuestion)
 						reply.Question = append(reply.Question, question)
 					} else {
-						io.WriteString(w, emptyJson)
+						writeJson(w, MessageModel{
+							Message: "Error"})
 					}
 				}
 			}
 
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(reply)
+			writeJson(w, reply)
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error getting questions"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid Session"})
 	}
 }
 
@@ -245,33 +257,34 @@ func updateQuestionHandler(w http.ResponseWriter, r *http.Request) {
 					_, err = db.Exec("UPDATE StudentAnswers SET Answer=? WHERE SessionId=? AND QuestionId=?", update.Answer, sessionId, update.QuestionId)
 
 					if err == nil {
-						w.Header().Set("Content-Type", "application/json")
-						json.NewEncoder(w).Encode(struct {
-							Message string
-						}{Message: "Success"})
+						writeJson(w, MessageModel{
+							Message: "Success"})
 					} else {
-						io.WriteString(w, emptyJson)
+						writeJson(w, MessageModel{
+							Message: "Error"})
 					}
 				} else {
 					_, err = db.Exec("INSERT INTO StudentAnswers VALUES(?,?,?)", sessionId, update.QuestionId, update.Answer)
 
 					if err == nil {
-						w.Header().Set("Content-Type", "application/json")
-						json.NewEncoder(w).Encode(struct {
-							Message string
-						}{Message: "Success"})
+						writeJson(w, MessageModel{
+							Message: "Success"})
 					} else {
-						io.WriteString(w, emptyJson)
+						writeJson(w, MessageModel{
+							Message: "Error"})
 					}
 				}
 			} else {
-				io.WriteString(w, emptyJson)
+				writeJson(w, MessageModel{
+					Message: "Error getting question"})
 			}
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error: Invalid JSON format"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid Session"})
 	}
 }
 
@@ -288,18 +301,20 @@ func getAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			err = row.Scan(&answer)
 
 			if err == nil {
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(QuestionUpdateRequest{
+				writeJson(w, QuestionUpdateRequest{
 					QuestionId: question,
 					Answer:     answer})
 			} else {
-				io.WriteString(w, emptyJson)
+				writeJson(w, MessageModel{
+					Message: "Error"})
 			}
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error: Invalid Question ID"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid Session"})
 	}
 }
 
@@ -331,21 +346,24 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 							CorrectAnswer: answer,
 							Reason:        reason})
 					} else {
-						io.WriteString(w, emptyJson)
+						writeJson(w, MessageModel{
+							Message: "Error"})
 					}
 				} else {
-					io.WriteString(w, emptyJson)
+					writeJson(w, MessageModel{
+						Message: "Error"})
 				}
 			}
 
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(ResultAnalysisResponse{
+			writeJson(w, ResultAnalysisResponse{
 				SubQuestion: subQuestionArray})
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid Session"})
 	}
 }
 
@@ -358,8 +376,7 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		err := row.Scan(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5])
 
 		if err == nil {
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(RegisterRequest{
+			writeJson(w, RegisterRequest{
 				RegisterNumber: data[0],
 				Name:           data[1],
 				AcademicYear:   data[2],
@@ -367,10 +384,12 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 				Year:           data[4],
 				Semester:       data[5]})
 		} else {
-			io.WriteString(w, emptyJson)
+			writeJson(w, MessageModel{
+				Message: "Error"})
 		}
 	} else {
-		io.WriteString(w, emptyJson)
+		writeJson(w, MessageModel{
+			Message: "Error: Invalid Session"})
 	}
 }
 
