@@ -93,11 +93,11 @@ return "";
             if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
               window.score++;
               $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
-              $(".a").append('<div> <mark style="background-color:green;">Your Answer : "'+window.question.SubQuestion[i].Answer+'"</div>');
+              $(".a").append('<div> <mark style="background-color:green;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
             }
             else{
               $(".a").append('<div> <mark style="background-color:red;">Your Answer is Wrong</mark></div>');//////////
-              $(".a").append('<div> <mark style="background-color:red;">Your Answer : "'+window.question.SubQuestion[i].Answer+'"</div>');
+              $(".a").append('<div> <mark style="background-color:red;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
             }
             // $(".a").append("<div>Your Answer : "+window.question.SubQuestion[i].Answer+"</div>");
             $(".a").append("<div><strong>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</strong></div>");
@@ -106,6 +106,7 @@ return "";
             }
           }
           $('.smark').text("Student Mark : "+window.score);
+          $('.totalmark').text("Total Mark : "+window.noquestion);
         }
 
 
@@ -125,12 +126,7 @@ return "";
         $('.year').text("Year : "+window.details.Year);
         $('.semester').text("Semester : "+window.details.Semester);
         $('.academicyear').text("Academic Year :"+window.details.AcademicYear);////////////
-        $('.totalmark').text("Total Mark : "+window.details.TotalMark);
-        //for(var i=0;i<window.noquestion;i++){
-          //if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
-           // window.score++;
-         // }
-        //}
+        // $('.totalmark').text("Total Mark : "+window.details.TotalMark);
        // $('.smark').text("Student Mark : "+window.score);
         fetchanswer();
       }
