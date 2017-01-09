@@ -86,10 +86,11 @@ func isValidSession(sessionId string, isTimeoutConsidered bool) bool {
 
 	if err == nil && len(sessionId) != 0 {
 		if isTimeoutConsidered {
-			_, offset := time.Now().Zone()
-			timeout.Time = timeout.Time.Add(-1 * time.Duration(offset) * time.Second) //fixes timezone bug where mysql returns Local time as UTC
+			now := time.Now()
+			loc := now.Location()
+			timeout.Time, _ = time.ParseInLocation(time.ANSIC, timeout.Time.Format(time.ANSIC), loc) //fixes timezone bug where mysql returns Local time as UTC
 
-			if timeout.Valid && time.Now().Before(timeout.Time) {
+			if timeout.Valid && now.Before(timeout.Time) {
 				return true
 			} else {
 				return false
