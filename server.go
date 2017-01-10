@@ -58,7 +58,7 @@ type QuestionModel struct {
 }
 
 type QuestionListResponse struct {
-	Expiry   int
+	Expiry   string
 	Question []QuestionModel
 }
 
@@ -79,16 +79,21 @@ func writeJson(w http.ResponseWriter, jsonData interface{}) {
 	json.NewEncoder(w).Encode(jsonData)
 }
 
+func fixTimeZone(errTime time.Time) time.Time {
+	location := time.Now().Location()
+	fixedTime, _ := time.ParseInLocation(time.ANSIC, errTime.Format(time.ANSIC), location) //fixes timezone bug where mysql returns Local time as UTC
+	return fixedTime
+}
+
 func isValidSession(sessionId string, isTimeoutConsidered bool) bool {
+	now := time.Now()
 	var timeout mysql.NullTime
 	dbSession := db.QueryRow("SELECT SessionId, Timeout FROM Session WHERE SessionId=?", sessionId)
 	err := dbSession.Scan(&sessionId, &timeout)
 
 	if err == nil && len(sessionId) != 0 {
 		if isTimeoutConsidered {
-			now := time.Now()
-			loc := now.Location()
-			timeout.Time, _ = time.ParseInLocation(time.ANSIC, timeout.Time.Format(time.ANSIC), loc) //fixes timezone bug where mysql returns Local time as UTC
+			timeout.Time = fixTimeZone(timeout.Time)
 
 			if timeout.Valid && now.Before(timeout.Time) {
 				return true
@@ -193,11 +198,15 @@ func getQuestionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	if isValidSession(sessionId, true) {
 		dbQuestions, err := db.Query("SELECT QuestionId, Question, File, SubQuestion FROM Questions")
+		dbTimeout := db.QueryRow("SELECT Timeout FROM Session WHERE SessionId=?", sessionId)
+		var timeout mysql.NullTime
+		errTimeout := dbTimeout.Scan(&timeout)
 		defer dbQuestions.Close()
 
-		if err == nil {
+		if err == nil && errTimeout == nil && timeout.Valid {
 			var reply QuestionListResponse
-			reply.Expiry = sessionExpiry
+			timeout.Time = fixTimeZone(timeout.Time)
+			reply.Expiry = timeout.Time.Format(time.RFC3339)
 
 			for dbQuestions.Next() {
 				var questionId int
@@ -350,8 +359,12 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 							CorrectAnswer: answer,
 							Reason:        reason})
 					} else {
-						writeJson(w, MessageModel{
-							Message: "Error"})
+						subQuestionArray = append(subQuestionArray, SubQuestionResultModel{
+							QuestionId:    i,
+							Question:      subQuestion,
+							Answer:        "",
+							CorrectAnswer: answer,
+							Reason:        reason})
 					}
 				} else {
 					writeJson(w, MessageModel{
