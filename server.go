@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"html/template"
@@ -16,10 +17,10 @@ import (
 
 var (
 	sessionKeyLength int = 50 //In bytes
-	sessionExpiry    int = 60 //In minutes
+	sessionExpiry    int
 	db               *sql.DB
-	user             string = "test"
-	password         string = "test"
+	user             string
+	password         string
 	database         string = "QuestionWriter"
 )
 
@@ -113,15 +114,15 @@ func displayWebPage(w http.ResponseWriter, file string) {
 	t.Execute(w, nil)
 }
 
-func registerHandler(w http.ResponseWriter, r *http.Request) {
+func registerHandler(w http.ResponseWriter, _ *http.Request) {
 	displayWebPage(w, "Register.html")
 }
 
-func dashboardHandler(w http.ResponseWriter, r *http.Request) {
+func dashboardHandler(w http.ResponseWriter, _ *http.Request) {
 	displayWebPage(w, "dashboard.html")
 }
 
-func resultsHandler(w http.ResponseWriter, r *http.Request) {
+func resultsHandler(w http.ResponseWriter, _ *http.Request) {
 	displayWebPage(w, "Result.html")
 }
 
@@ -411,11 +412,19 @@ func studentDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	fmt.Print("Enter user name: ")
+	fmt.Scanln(&user)
+	fmt.Print("Enter password: ")
+	fmt.Scanln(&password)
+	fmt.Print("Enter length of examination: ")
+	fmt.Scanln(&sessionExpiry)
+	fmt.Println("Starting up server")
 	var dbErr error
 	db, dbErr = sql.Open("mysql", user+":"+password+"@/"+database)
 	defer db.Close()
 
 	if dbErr == nil {
+		fmt.Println("Server is running")
 		http.Handle("/", http.FileServer(http.Dir("./static")))
 		http.HandleFunc("/register", registerHandler)
 		http.HandleFunc("/dashboard", dashboardHandler)
@@ -428,6 +437,6 @@ func main() {
 		http.HandleFunc("/report", reportHandler)
 		http.ListenAndServe(":8000", nil)
 	} else {
-		panic(dbErr)
+		fmt.Println("Error: Invalid login details")
 	}
 }
