@@ -86,7 +86,11 @@ func isValidSession(sessionId string, isTimeoutConsidered bool) bool {
 
 	if err == nil && len(sessionId) != 0 {
 		if isTimeoutConsidered {
-			if timeout.Valid && time.Now().Before(timeout.Time) {
+			now := time.Now()
+			loc := now.Location()
+			timeout.Time, _ = time.ParseInLocation(time.ANSIC, timeout.Time.Format(time.ANSIC), loc) //fixes timezone bug where mysql returns Local time as UTC
+
+			if timeout.Valid && now.Before(timeout.Time) {
 				return true
 			} else {
 				return false
@@ -323,7 +327,7 @@ func reportHandler(w http.ResponseWriter, r *http.Request) {
 
 	if isValidSession(sessionId, false) {
 		var questionLength int
-		row := db.QueryRow("SELECT MAX(QuestionId) FROM Questions")
+		row := db.QueryRow("SELECT COUNT(QuestionId) FROM Questions")
 		err := row.Scan(&questionLength)
 
 		if err == nil {
