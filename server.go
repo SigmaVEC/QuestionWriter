@@ -18,8 +18,8 @@ var (
 	sessionKeyLength int = 50 //In bytes
 	sessionExpiry    int = 1 //In minutes
 	db               *sql.DB
-	user             string = "root"
-	password         string = "toor"
+	user             string = "test"
+	password         string = "test"
 	database         string = "QuestionWriter"
 )
 
