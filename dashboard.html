@@ -68,23 +68,6 @@
 	var file = [];
 	var iod=0;
 	var times_played = 0,max_plays = 2;
-	function settimenow(){
-		var today = new Date();
-		var h= today.getHours();
-	  var m = today.getMinutes();
-	  var s = today.getSeconds();
-		var stime = h+":"+m+":"+s;
-		setCookie("stime", stime, 0);
-}
-
-function getcurrenttimenow(){
-	var today = new Date();
-	var h1 = today.getHours();
-	var m1 = today.getMinutes();
-	var s1 = today.getSeconds();
-	var ptime = h1+":"+m1+":"+s1;
-	return ptime;
-}
 	$(document).ready(function(){
 	getquestion();
 	disablesubmit();
@@ -132,7 +115,6 @@ function getcurrenttimenow(){
 		function setCookie(cname, cvalue, exdays) {
     	document.cookie = cname + "=" + cvalue + ";";
 		}
-	// window.onbeforeunload = setTimeout(warning(),100);
 
 		function getCookie(cname) {
     var name = cname + "=";
@@ -159,49 +141,12 @@ function getcurrenttimenow(){
 
 									window.question = data;
 		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
-									if(getCookie("ctime")==""){
-										settimenow();
+
 										var a1 = new Date();
 										var a = new Date(window.question.Expiry);
 										var a2 = new Date();
 										a2 = Math.abs(a1.getTime()-a.getTime());
 										Countdown( "countdown", a2/(1000*60), 0);
-									}
-									else{
-										var cms;
-										var sms;
-										var nms = [];
-										sms = getCookie("stime").split(":");
-										cms = getCookie("ctime").split(":");
-										var pms=getcurrenttimenow().split(":");
-										// Math.abs();
-										nms[0] = parseInt(sms[0])-parseInt(pms[0]);
-										nms[1] = Math.abs(parseInt(sms[1])-parseInt(pms[1]));
-										nms[2] = Math.abs(parseInt(sms[2])-parseInt(pms[2]));
-										if(nms[0] >= 0){
-											nms[0] = nms[0] * 60;
-											nms[1] = nms[0] + nms[1];
-											if((nms[1]-window.question.Expiry)>0){
-												//fillall();
-												alert("Time's up your answer are saved!");
-												document.cookie = "id=done"+getCookie("id")+";";
-												// fillall();
-												window.location = "/results";
-											}
-											else{
-													// Countdown( "countdown", Math.abs(parseInt(nms[1]-cms[0])), Math.abs(parseInt(nms[2]-cms[1])));
-													Countdown( "countdown", parseInt(window.question.Expiry-nms[1]-1), parseInt(60-nms[2]));
-											}
-										}
-										else{
-											//fillall();
-											alert("Time's up your answer are saved!");
-											document.cookie = "id=done"+getCookie("id")+";";
-											// fillall();
-											window.location = "/results";
-										}
-										// Countdown( "countdown", parseInt(cms[0]), parseInt(cms[1]));
-									}
 										nextfetchquestion(1);
 										disableprevious();
 										disablenext();
@@ -213,27 +158,6 @@ function getcurrenttimenow(){
 							}
 						}
 
-		// function Createbutton(){
-    //     	for(var i=1; i<=window.noquestion;i++){
-    //       		// var dynamicbutton= $('<input/>').attr({ id: 'button'+i, type: 'button', name: 'btn'+i, value: i});
-		// 					 var dynamicbutton = $('<input type="button" value="new button" />');
-    //       		$("#createbutton").append(dynamicbutton);
-    //       	}
-    //       }
-					// $(document).ready(function(){
-					// $("#button11").click(function(){
-					// });
-					// });
-
-      //     for(i=0;i<window.noquestion;i++){
-      //     $(document).on('click','#button'+i,function(){
-      //     		window.buttonnum=$(this).val();
-      //     		// save(2);
-      //     		jumpfetchquestion(window.buttonnum);
-			//
-			// });
-			// }
-
 			function verify() {
     var x = document.getElementById("fill11");
     if(x.value.length>0){
@@ -244,7 +168,6 @@ function getcurrenttimenow(){
 				function prefetchquestion(){
 							window.answer = window.result[window.currentid];
 							if(window.fillorchoice=="fill"){
-								// $('input:text[name=fill1]')[window.answer].value = window.answer;
 								if(window.answer==""){
 									disablenext();
 								}
@@ -486,10 +409,6 @@ function getcurrenttimenow(){
 				// $('input[type="radio"]').on('click change', function(e) {
     		// 	enable();
 				// });
-				//
-				// $('input[type="radio"]').on('click change', function(e) {
-    		// 	enable();
-				// });
 
 				function enable(){
 					enablenext();
@@ -683,8 +602,6 @@ function getcurrenttimenow(){
                     <div id="choice3">
                         <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
-				    <!-- <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
-					<button class="btn btn-primary" id="previous" onclick="save(3)">Previous</button> -->
                 </div>
                 <div class="col-md-4" id="sidePlane">
                     <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
