@@ -15,16 +15,16 @@
   left:1200px;
   width:100px;
   }
-  #next{
+	#next{
   position: fixed;
-	bottom: 50px;
-  left:700px;
+	bottom: 250px;
+  left:1200px;
   width:100px;
   }
   #previous{
   position: fixed;
-	bottom: 50px;
-  left:600px;
+	bottom: 250px;
+  left:1000px;
   width:100px;
   }
 #countdown {
@@ -41,9 +41,6 @@
   width:100px;
 }
 #description{
-	font-weight: bolder;
-}
-#questionid{
 	font-weight: bolder;
 }
 #question{
@@ -105,7 +102,7 @@ function getcurrenttimenow(){
     {
         msLeft = endTime - (+new Date);
         if ( msLeft < 1000 ) {
-            $("#countdown").html("countdown's over!");
+            $("#countdown").html("Time's up!");
 						disable();
         } else {
             time = new Date( msLeft );
@@ -152,13 +149,23 @@ function getcurrenttimenow(){
 		return "";
 }
 						function getquestion(){
+							disableprevious();
+							disablenext();
+							disablesound();
+							disablevideo();
 							var session = getCookie("id");
+							if(session.length<=69){
 								$.get("/questions", {sessionId: session} ,function(data){
+
 									window.question = data;
 		  						    window.noquestion = window.question.Question[window.question.Question.length-1].SubQuestion[window.question.Question[window.question.Question.length-1].SubQuestion.length-1].QuestionId;
 									if(getCookie("ctime")==""){
 										settimenow();
-										Countdown( "countdown", window.question.Expiry, 0);
+										var a1 = new Date();
+										var a = new Date(window.question.Expiry);
+										var a2 = new Date();
+										a2 = Math.abs(a1.getTime()-a.getTime());
+										Countdown( "countdown", a2/(1000*60), 0);
 									}
 									else{
 										var cms;
@@ -175,7 +182,10 @@ function getcurrenttimenow(){
 											nms[0] = nms[0] * 60;
 											nms[1] = nms[0] + nms[1];
 											if((nms[1]-window.question.Expiry)>0){
+												//fillall();
 												alert("Time's up your answer are saved!");
+												document.cookie = "id=done"+getCookie("id")+";";
+												// fillall();
 												window.location = "/results";
 											}
 											else{
@@ -184,7 +194,10 @@ function getcurrenttimenow(){
 											}
 										}
 										else{
+											//fillall();
 											alert("Time's up your answer are saved!");
+											document.cookie = "id=done"+getCookie("id")+";";
+											// fillall();
 											window.location = "/results";
 										}
 										// Countdown( "countdown", parseInt(cms[0]), parseInt(cms[1]));
@@ -194,6 +207,11 @@ function getcurrenttimenow(){
 										disablenext();
 								});
 							}
+							else{
+								alert("Your Session is Done");
+								window.location="/register";
+							}
+						}
 
 		// function Createbutton(){
     //     	for(var i=1; i<=window.noquestion;i++){
@@ -489,6 +507,12 @@ function getcurrenttimenow(){
         function disablenext(){
 						$('#next').hide();
         }
+				function disablesound(){
+						$('#audiobutton').hide();
+        }
+				function disablevideo(){
+						$('#videobutton').hide();
+        }
 
         function enablenext(){
             // $('#next').removeAttr('disabled');
@@ -513,6 +537,17 @@ function getcurrenttimenow(){
             // $('#submit').removeAttr('disabled');
 						$('#submit').show();
         }
+
+				function fillall(){
+					var i;
+					for(i=window.currentid; i<window.noquestion; i++){
+						var json = JSON.stringify({"QuestionId":i,"Answer":"Not Answered"});
+						$.get("/update",{ sessionId: getCookie("id"), updateJson:json } ,function(data){
+								window.result[w] = a;
+						});
+					}
+				}
+
 				function save(){
 					// audio.stop();
 					if(window.currentid<window.noquestion){
@@ -566,14 +601,17 @@ function getcurrenttimenow(){
                         nextfetchquestion(1);
 				    }
 				    else if(arguments[0]==-1){
+								//fillall();
 								document.cookie = "id=done"+getCookie("id")+";";
 				        alert("Time's up your answer are saved");
+
 				        window.location = "/results";
 				    }
 				    else if(arguments[0]==1){
 				        //submit button
 								// enablesubmit();
 				        document.cookie = "id=done"+getCookie("id")+";";
+								// fillall();
 				        window.location = "/results";
 				    }
 						else if(arguments[0]==2){
@@ -612,7 +650,7 @@ function getcurrenttimenow(){
         </nav>
         <div id="moveleft" class="container-fluid">
             <div class="row" >
-                <div class="col-md-8 " id="quesPlane" >
+                <div class="col-md-8 " id="quesPlane" style="border-right: 1px solid black;">
 										<button id="audiobutton">Play Sound</button>
 										<button id="videobutton">Play video</button>
 										<div id="audiotag0">
@@ -626,7 +664,10 @@ function getcurrenttimenow(){
 										<br>
                     <div id="description"></div>
 										<br>
+										<div style="border-bottom: 1px solid black;"></div>
+										<div style="font-size:20px"><strong>Question</strong></div>
                     <div id="question"></div>
+										<!-- <fieldset><legend>Question</legend><textarea rows="4" cols="50">sdassadS</textarea></fieldset> -->
 										<br>
                     <div id="fillintheblank"></div>
                     <div id="choice0">
@@ -642,13 +683,17 @@ function getcurrenttimenow(){
                     <div id="choice3">
                         <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
-				    <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
-					<button class="btn btn-primary" id="previous" onclick="save(3)">Previous</button>
+				    <!-- <button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
+					<button class="btn btn-primary" id="previous" onclick="save(3)">Previous</button> -->
                 </div>
                 <div class="col-md-4" id="sidePlane">
                     <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
 										<div id="inst"></div>
                 	<div id="createbutton" ></div>
+									<div>
+										<button class="btn btn-primary" id="next" style="color:grre;margin-left:30px;" onclick="save(0)">Next</button>
+									<button class="btn btn-primary" id="previous" onclick="save(3)">Previous</button>
+									</div>
                 	<div id="countdown" class="rect1">Time left</div>
 					<button class="btn btn-primary" id="submit" onclick="save(1)">Submit</button>
                 </div>

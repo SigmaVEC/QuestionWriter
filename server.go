@@ -16,10 +16,10 @@ import (
 
 var (
 	sessionKeyLength int = 50 //In bytes
-	sessionExpiry    int = 60 //In minutes
+	sessionExpiry    int = 1 //In minutes
 	db               *sql.DB
-	user             string = "test"
-	password         string = "test"
+	user             string = "root"
+	password         string = "toor"
 	database         string = "QuestionWriter"
 )
 

@@ -92,12 +92,12 @@ return "";
         // }
             if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
               window.score++;
-              $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
               $(".a").append('<div> <mark style="background-color:green;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
+              $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
             }
             else{
-              $(".a").append('<div> <mark style="background-color:red;">Your Answer is Wrong</mark></div>');//////////
               $(".a").append('<div> <mark style="background-color:red;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
+              $(".a").append('<div> <mark style="background-color:red;">Your Answer is Wrong</mark></div>');//////////
             }
             // $(".a").append("<div>Your Answer : "+window.question.SubQuestion[i].Answer+"</div>");
             $(".a").append("<div><strong>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</strong></div>");
