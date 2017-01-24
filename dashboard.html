@@ -12,19 +12,19 @@
   #submit{
   position: fixed;
 	bottom: 50px;
-  left:1200px;
+  right:80px;
   width:100px;
   }
 	#next{
   position: fixed;
 	bottom: 150px;
-  left:1200px;
+  right:80px;
   width:100px;
   }
   #previous{
   position: fixed;
 	bottom: 150px;
-  left:1000px;
+  right:200px;
   width:100px;
   }
 #countdown {
@@ -37,7 +37,7 @@
     position: absolute;
     text-align: center;
   top:450px;
-  left:150px;
+  right:200px;
   width:100px;
 }
 #description{
@@ -187,8 +187,6 @@
 						}
 
         function nextfetchquestion(){
-					// warning();
-					// $("div").hide();
 					disablenext();
         	var text, obj;
 					if(arguments[0]==1){
@@ -245,9 +243,7 @@
 											$("#choice0").show();
 											var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 											for(var k=0;k<cl;k++){
-													// $("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 													$("#choice"+k).html('<label id="'+k+'"choice"><input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">'+ window.question.Question[i].SubQuestion[j].Choice[k] +'</input></label>');
-													// $("#label").html('<label for="'+window.question.Question[i].SubQuestion[j].Choice[k]+'">'+window.question.Question[i].SubQuestion[j].Choice[k]+'</label>');
 											}
 											if(cl==3){
 												$("#choice3").hide();
@@ -262,30 +258,20 @@
 											if((arguments[0]==1)&&(window.result[window.currentid]!=undefined)){
 											prefetchquestion();
 											}
-										// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0] +'</input>');
-										// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
-										// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
-										// $("#choice3").html('<input type="radio" name="choice" id="3choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[3] +'</input>');
 										break;
 									}
 
 							}
 							else{
-								// $("#audiofile").remove();
-								// $("#videfile").remove();
-								// $("#audiobutton").show();
 								var a1 = window.question.Question[i].File;
 								var n = a1.length;
 								if(a1.substring(n-3, n)=="mp3"){
-									// window.max_plays+=2;
 									window.audioorvideo = "audio";
 									$("#videobutton").hide();
 									$("#audiobutton").show();
 									$("#audiofile").show();
 									$("audiotag0").html('<div id="audiotag0"></div>');
 									$("#audiotag0").html('<audio id="fileaudio" width="640" height="264" >' + '<source src="'+a1+'" type="audio/mp3"></source>'+'</audio>');
-									////////////////
-									   ///////////////audio limit
 												var times_played = 0,max_plays = 2;
 									window.audio = document.getElementById("fileaudio");
 									$(document).ready(function(){
@@ -310,8 +296,7 @@
 									$("#videofile").show();
 									$("videotag0").html('<div id="videotag0"></div>');
 									$("#videotag0").html('<video id="filevideo" width="640" height="264">' + '<source src="'+a1+'" type="video/mp4"></source>'+'</video>');
-									///////////
-									var times_played = 0,max_plays = 2;   ///////////////video limit
+									var times_played = 0,max_plays = 2;
 									window.video = document.getElementById("filevideo");
 									$(document).ready(function(){
 									$("#videobutton").click(function(){
@@ -352,16 +337,13 @@
 									else{
 										$("#fillintheblank").hide();
 									window.fillorchoice="choice";
-									// disablenext();
 									$("#choice3").show();
 									$("#choice2").show();
 									$("#choice1").show();
 									$("#choice0").show();
 									var cl = window.question.Question[i].SubQuestion[j].Choice.length;
 									for(var k=0;k<cl;k++){
-											// $("#choice"+k).html('<input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()"><label id="choicelabel'+k+'">' + window.question.Question[i].SubQuestion[j].Choice[k] +'</label></input>');
 											$("#choice"+k).html('<label id="'+k+'"choice"><input type="radio" value="'+k+'" name="choice" id="'+k+'"choice" onclick="enable()">'+ window.question.Question[i].SubQuestion[j].Choice[k] +'</input></label>');
-											// $("#"+k+"choice").html('<label for="'+window.question.Question[i].SubQuestion[j].Choice[k]+'">'+window.question.Question[i].SubQuestion[j].Choice[k]+'</label>');
 									}
 									if(cl==3){
 										$("#choice3").hide();
@@ -369,7 +351,6 @@
 									else{
 										$("#choice3").show();
 									}
-									// disablenext();
 									if(arguments[0]==-1){
 									prefetchquestion();
 									enablenext();
@@ -379,22 +360,15 @@
 									enablenext();
 									}
 									break;
-									// $("#choice0").html('<input type="radio" name="choice" id="0choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[0]+'</input>');
-									// $("#choice1").html('<input type="radio" name="choice" id="1choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[1] +'</input>');
-									// $("#choice2").html('<input type="radio" name="choice" id="2choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[2] +'</input>');
-									// $("#choice3").html('<input type="radio" name="choice" id="3choice" onclick="enable()">' + window.question.Question[i].SubQuestion[j].Choice[3] +'</input>');
 									}
 							}
-            				///
+
             				break;
 						}
 					}
-					// break;
-					// enablenext();
 				}
 			}
 			else{
-				// alert("Times Up");
 				save(1);
 			}
         }
@@ -404,10 +378,6 @@
 					save(2);
 				}
 			}
-
-				// $('input[type="radio"]').on('click change', function(e) {
-    		// 	enable();
-				// });
 
 				function enable(){
 					enablenext();
@@ -433,12 +403,10 @@
         }
 
         function enablenext(){
-            // $('#next').removeAttr('disabled');
 						$('#next').show();
         }
 
         function disableprevious(){
-            // $('#previous').attr('disabled','disabled');
 						$('#previous').hide();
         }
 
@@ -447,12 +415,10 @@
         }
 
         function disablesubmit(){
-            // $('#submit').attr('disabled','disabled');
 						$('#submit').hide();
         }
 
         function enablesubmit(){
-            // $('#submit').removeAttr('disabled');
 						$('#submit').show();
         }
 
@@ -467,7 +433,6 @@
 				}
 
 				function save(){
-					// audio.stop();
 					if(window.currentid<window.noquestion){
 						if(audioorvideo==null){
 						$("#audiobutton").hide();
@@ -496,11 +461,6 @@
 							a1=$("#fill11").val();
 					}
 					else {
-              // var tmp = $('input:radio[name=choice]:checked').val();///////////////
-              // tmp='choicelabel'+tmp;///////////////
-							// a1= $(tmp).val();////////////////////////
-							// a1=$( "input:checked" ).val();
-							// a1=$( "input:checked" ).val();
 							a = $('input:radio[name="choice"]:checked').val();
 							for(var i=0;i<window.question.Question.length;i++){
 								for(var j=0;j<window.question.Question[i].SubQuestion.length;j++){
@@ -519,28 +479,20 @@
                         nextfetchquestion(1);
 				    }
 				    else if(arguments[0]==-1){
-								//fillall();
 								document.cookie = "id=done"+getCookie("id")+";";
 				        alert("Time's up your answer are saved");
 
 				        window.location = "/results";
 				    }
 				    else if(arguments[0]==1){
-				        //submit button
-								// enablesubmit();
 				        document.cookie = "id=done"+getCookie("id")+";";
-								// fillall();
 				        window.location = "/results";
 				    }
 						else if(arguments[0]==2){
-				        //submit button
 								alert("verify and submit");
-								// enablesubmit();
 				    }
 						if(arguments[0]==3){
-				        //submit button
 				        nextfetchquestion(-1);
-								// enablesubmit();
 				    }
 				}
 
@@ -562,10 +514,8 @@
 										<button id="audiobutton">Play Sound</button>
 										<button id="videobutton">Play video</button>
 										<div id="audiotag0">
-										<!-- <div id="audiofile"></div> -->
 									</div>
 									<div id="videotag0">
-									<!-- <div id="videofile"></div> -->
 								</div>
 										<br>
 										<div id="videofile"></div>
@@ -578,21 +528,15 @@
 										<br>
                     <div id="fillintheblank"></div>
                     <div id="choice0">
-                        <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
                     <div id="choice1">
-                        <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
-                        <!-- <label type="radio"><input> -->
                     </div><br>
                     <div id="choice2">
-                        <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
                     <div id="choice3">
-                        <!--<input type="radio" name="gender" value="male" checked> sada<br>-->
                     </div><br>
                 </div>
                 <div class="col-md-4" id="sidePlane" >
-                    <!--<div style="background=black;width=10px;height=100%;margin-left=800px;"></div>-->
 										<div id="inst"></div>
                 	<div id="createbutton" ></div>
 									<div>

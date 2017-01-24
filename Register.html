@@ -26,41 +26,6 @@
 
 </style>
     <script>
-    // var y;
-    // var newDate = new Date();
-    // $(document).ready(function(){
-    // for(var i=1;i<12;i++){
-    //   y[i] = newDate.getFullYear();
-    //   alert(y[i]);
-    // }
-    // $("#1").val(y1+"-"+y4);
-    // $("#2").val(y2+"-"+y5);
-    // $("#3").val(y3+"-"+y6);
-    // $("#4").val(y4+"-"+y7);
-    // $("#5").val(y5+"-"+y8);
-    // $("#6").val(y7+"-"+y9);
-    // $("#7").val(y8+"-"+y10);
-    // $("#8").val(y9+"-"+y11);
-    // $("#academicyearlist").append("<option value='" + y5+"-"+y8 + "'>");
-    //   });
-  // }
-    // var y2 = newDate.getFullYear();
-    // var y3 = newDate.getFullYear();
-    // var y4 = newDate.getFullYear();
-    // var y5 = newDate.getFullYear();
-    // var y6 = newDate.getFullYear();
-    // var y7 = newDate.getFullYear();
-    // var y8 = newDate.getFullYear();
-    // var y9 = newDate.getFullYear();
-    // var y10 = newDate.getFullYear();
-    // var y11 = newDate.getFullYear();
-    // var y1 = newDate.getFullYear();
-
-    // $("#1").append($('<option/>').val("academicyearlist").text("value"));
-    // $("#2").append($('<option/>').val("academicyearlist").text("value"));
-    // $("#3").append($('<option/>').val("academicyearlist").text("value"));
-
-
   $( function() {
     $( document ).tooltip();
   } );
@@ -69,11 +34,9 @@
     function checksessionid(){
       var sessi = getCookie("id");
                 if(sessi.length>69){
-                  // return false;
                   window.location = "/register";
                 }
                 else {
-                  // return true;
                   window.location = "/dashboard";
                 }
     }
@@ -141,7 +104,6 @@ function setCookie(cname, cvalue, exdays) {
 
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-            <!--<form role="form">-->
             <h2>Sign In</h2>
             <hr class="colorgraph">
             <div class="row">
@@ -172,17 +134,6 @@ function setCookie(cname, cvalue, exdays) {
             </div>
             <div class="form-group">
                 <input type="text"  min="2000" max="2016" title="Enter Academic Year Eg:2014-2018" name="email" id="email" class="form-control input-lg" placeholder="Academic Year" tabindex="4">
-                <!-- <option label='CSE' value=<script>newDate.getFullYear();</script>> -->
-                <!--<datalist id='academicyearlist'>-->
-                <!--<option value='2013-2017'>-->
-                <!--<option value='2014-2018'>-->
-                <!--<option value='2015-2019'>-->
-                <!--<option value='2016-2020'>-->
-                <!--<option value='2017-2021'>-->
-                <!--<option value='2018-2022'>-->
-                <!--<option value='2019-2023'>-->
-                <!--<option value='2020-2024'>-->
-                <!--</datalist>-->
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
@@ -215,34 +166,10 @@ function setCookie(cname, cvalue, exdays) {
 
             <hr class="colorgraph">
             <div class="row">
-                <div class="col-xs-12 col-md-6"><a onclick="check()" class="btn btn-success btn-block btn-lg">Sign In</a></div>
+                <div class="col-xs-12 col-md-6"><a tabindex="6" onclick="check()" class="btn btn-success btn-block btn-lg">Sign In</a></div>
             </div>
-            <!--</form>-->
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="t_and_c_m" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="myModalLabel">Terms & Conditions</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, itaque, modi, aliquam nostrum at sapiente consequuntur natus odio reiciendis perferendis rem nisi tempore possimus ipsa porro delectus quidem dolorem ad.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">I Agree</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 </div>
 </body>
 </html>

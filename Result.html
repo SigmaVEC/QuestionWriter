@@ -5,8 +5,14 @@
   <link rel="stylesheet" href="css/bootstrap.min.css"/>
   <link rel="stylesheet" href="css/bootstrap-theme.css"/>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Report</title>
     <style>
+    @page { size: auto;  margin: 0mm; }
+    @media print {
+       #but {
+           display: none;
+        }
+      }
     #naq{
       font-weight: bold;
       font-size: 18px;
@@ -26,7 +32,7 @@
 #but{
   position:fixed;
   top:30px;
-  left:1100px;
+  right:100px;
 }
 #qna1{
   font-size: 20px;
@@ -72,7 +78,6 @@ return "";
 
     function fetchanswer(){
       var a1;
-      // $("div").hide();
       var ssession = getCookie("id");
       var n = ssession.length;
       var session = ssession.substring(8, n);
@@ -85,21 +90,13 @@ return "";
     function s(){
     for(var i=0;i<window.noquestion;i++){
             $(".a").append("<div id=naq>"+window.question.SubQuestion[i].QuestionId+":"+window.question.SubQuestion[i].Question+"</div>");
-        //     if(window.question.SubQuestion[i].Choice.length!=null){
-        //     for(j=0;j<window.question.SubQuestion[i].Choice.length;j++){
-        //     $(".a").append("<div>"+window.question.SubQuestion[i].Choice[j]+"</div>");
-        //   }
-        // }
             if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
               window.score++;
-              $(".a").append('<div> <mark style="background-color:green;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
-              $(".a").append('<div> <mark style="background-color:green;">Your Answer is Correct</mark></div>');//////////
+              $(".a").append('<div> Your Answer : '+window.question.SubQuestion[i].Answer+'  &#10004;</div>');
             }
             else{
-              $(".a").append('<div> <mark style="background-color:red;">Your Answer : '+window.question.SubQuestion[i].Answer+'</div>');
-              $(".a").append('<div> <mark style="background-color:red;">Your Answer is Wrong</mark></div>');//////////
+              $(".a").append('<div> Your Answer : '+window.question.SubQuestion[i].Answer+'  &#10008;</div>');
             }
-            // $(".a").append("<div>Your Answer : "+window.question.SubQuestion[i].Answer+"</div>");
             $(".a").append("<div><strong>CorrectAnswer : "+window.question.SubQuestion[i].CorrectAnswer+"</strong></div>");
             if(window.question.SubQuestion[i].Reason!=""){
               $(".a").append("<div>Reason : "+window.question.SubQuestion[i].Reason+"</div>");
@@ -125,17 +122,13 @@ return "";
         $('.branch').text("Department : "+window.details.Department);
         $('.year').text("Year : "+window.details.Year);
         $('.semester').text("Semester : "+window.details.Semester);
-        $('.academicyear').text("Academic Year :"+window.details.AcademicYear);////////////
-        // $('.totalmark').text("Total Mark : "+window.details.TotalMark);
-       // $('.smark').text("Student Mark : "+window.score);
+        $('.academicyear').text("Academic Year :"+window.details.AcademicYear);
         fetchanswer();
       }
 
     </script>
 </head>
 <body style="background-color:#E6E6FA;">
-<!-- <object width=100% height=570 data="mozilla.pdf">
-</object> -->
 <div class="as" align="center" style="font-weight: bold">GE6674 COMMUNICATION AND SOFT SKILLS LABORATORY</div>
 <div align="center" style="font-weight: bold">LAB RECORD</div>
 <div align="center" style="font-weight: bold">LAB SESSION __</div>
@@ -153,9 +146,6 @@ return "";
 <div id="qna1"><center>Questions And Answers</center></div>
 <br>
 <div class="a" ></div>
-<!-- <div id="sanswer">asdsad</div> -->
-<!-- <div id="canswer">asdsa</div> -->
-<!-- <div id="explain">asdsad</div> -->
 <div align="left" class="date1"></div>
 <div align="right" class="facultyincharge">FACULTY-IN-CHARGE</div>
 <button id="but" class="btn btn-primary" onclick="myFunction()">Print this page</button>
