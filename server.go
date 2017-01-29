@@ -438,5 +438,6 @@ func main() {
 		http.ListenAndServe(":8000", nil)
 	} else {
 		fmt.Println("Error: Invalid login details")
+		panic(dbErr)
 	}
 }
