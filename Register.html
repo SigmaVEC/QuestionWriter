@@ -51,7 +51,7 @@ function setCookie(cname, cvalue, exdays) {
   document.cookie = cname + "=" + cvalue + ";";
 }
     function check(){
-    var fields = ["first_name", "last_name", "display_name", "email", "password", "password_confirmation"], i, focus=1;
+    var fields = ["first_name", "register_number", "departments", "academic_year", "yearno", "semesterno"], i, focus=1;
         for(i=0; i<fields.length; i++){
             if(document.getElementById(fields[i]).value==""){
                 alert("fill all the field");
@@ -59,10 +59,10 @@ function setCookie(cname, cvalue, exdays) {
                 document.getElementById(fields[i]).focus();
                 break;
             }
-              if((fields[i]!="last_name")&&(isNaN(document.getElementById(fields[i]).value))){
+              if((fields[i]!="register_number")&&(isNaN(document.getElementById(fields[i]).value))){
                 focus=1;
               }
-              else if(((fields[i]=="last_name")&&(!(isNaN(document.getElementById(fields[i]).value))))){
+              else if(((fields[i]=="register_number")&&(!(isNaN(document.getElementById(fields[i]).value))))){
                 focus=1;
               }
               else{
@@ -77,11 +77,11 @@ function setCookie(cname, cvalue, exdays) {
     }
     function getsessionid(){
         var studentdetails = JSON.stringify({"Name":document.getElementById("first_name").value,
-        "RegisterNumber":document.getElementById("last_name").value,
-        "Department":document.getElementById("display_name").value,
-        "AcademicYear":document.getElementById("email").value,
-        "Year":document.getElementById("password").value,
-        "Semester":document.getElementById("password_confirmation").value
+        "RegisterNumber":document.getElementById("register_number").value,
+        "Department":document.getElementById("departments").value,
+        "AcademicYear":document.getElementById("academic_year").value,
+        "Year":document.getElementById("yearno").value,
+        "Semester":document.getElementById("semesterno").value
         });
         $.get("/login", { studentJson: studentdetails }, function(result){
             var sess = result;
@@ -114,12 +114,12 @@ function setCookie(cname, cvalue, exdays) {
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="number" min="113200000000" title="Enter Your Register Number" max="113299999999" name="last_name" id="last_name" class="form-control input-lg" placeholder="RegisterNumber" tabindex="2">
+                        <input type="number" min="113200000000" title="Enter Your Register Number" max="113299999999" name="register_number" id="register_number" class="form-control input-lg" placeholder="RegisterNumber" tabindex="2">
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <input type="text" list="departmentlist" title="Enter Your Department" name="display_name" id="display_name" class="form-control input-lg" placeholder="Department" tabindex="3">
+                <input type="text" list="departmentlist" title="Enter Your Department" name="departments" id="departments" class="form-control input-lg" placeholder="Department" tabindex="3">
                 <datalist id='departmentlist'>
                 <option label='CSE' value='Computer Science and Engineering'>
                 <option label='IT' value='Information Technology'>
@@ -133,12 +133,12 @@ function setCookie(cname, cvalue, exdays) {
                 </datalist>
             </div>
             <div class="form-group">
-                <input type="text"  min="2000" max="2016" title="Enter Academic Year Eg:2014-2018" name="email" id="email" class="form-control input-lg" placeholder="Academic Year" tabindex="4">
+                <input type="text"  min="2000" max="2016" title="Enter Academic Year Eg:2014-2018" name="academic_year" id="academic_year" class="form-control input-lg" placeholder="Academic Year Eg:2014-2018" tabindex="4">
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="I" list="years" title="Enter Year 1,2,3,4" name="password" id="password" class="form-control input-lg" placeholder="Year" tabindex="5">
+                        <input type="I" list="years" title="Enter Year 1,2,3,4" name="yearno" id="yearno" class="form-control input-lg" placeholder="Year" tabindex="5">
                         <datalist id="years">
                         <option label='1st year' value='I Year'>
                         <option label='2nd year' value='II Year'>
@@ -149,7 +149,7 @@ function setCookie(cname, cvalue, exdays) {
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="form-group">
-                        <input type="I" list="semesters" title="Enter Semester" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Semester" tabindex="6">
+                        <input type="I" list="semesters" title="Enter Semester" name="semesterno" id="semesterno" class="form-control input-lg" placeholder="Semester" tabindex="6">
                         <datalist id="semesters">
                         <option label='1st semester' value='I SEM'>
                         <option label='2nd semester' value='II SEM'>

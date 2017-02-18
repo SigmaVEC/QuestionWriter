@@ -47,7 +47,7 @@ body {
     </style>
     <script>
     var question, details, noquestion, score=0;
-    function myFunction() {
+    function printpage() {
         window.print();
     }
     $(document).ready(function(){
@@ -84,10 +84,10 @@ return "";
       $.get("/report", {sessionId: session} ,function(data){
         window.question = data;
         a1 = window.noquestion = window.question.SubQuestion.length;
-        s();
+        displayanswers();
       });
     }
-    function s(){
+    function displayanswers(){
     for(var i=0;i<window.noquestion;i++){
             $(".a").append("<div id=naq>"+window.question.SubQuestion[i].QuestionId+":"+window.question.SubQuestion[i].Question+"</div>");
             if(window.question.SubQuestion[i].Answer==window.question.SubQuestion[i].CorrectAnswer){
@@ -113,10 +113,10 @@ return "";
         var session = ssession.substring(8, n);
         $.get("/studentDetails", {sessionId: session} ,function(data){
           window.details = data;
-          s1();
+          displaystudentdetails();
         });
       }
-        function s1(){
+        function displaystudentdetails(){
         $('.sname').text("Student's Name : "+window.details.Name);
         $('.snumber').text("Student 's Register Number : "+window.details.RegisterNumber);
         $('.branch').text("Department : "+window.details.Department);
@@ -148,6 +148,6 @@ return "";
 <div class="a" ></div>
 <div align="left" class="date1"></div>
 <div align="right" class="facultyincharge">FACULTY-IN-CHARGE</div>
-<button id="but" class="btn btn-primary" onclick="myFunction()">Print this page</button>
+<button id="but" class="btn btn-primary" onclick="printpage()">Print this page</button>
 </body>
 </html>
