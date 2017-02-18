@@ -416,7 +416,7 @@ func main() {
 	fmt.Scanln(&user)
 	fmt.Print("Enter password: ")
 	fmt.Scanln(&password)
-	fmt.Print("Enter length of examination: ")
+	fmt.Print("Enter length of examination [In Minutes]: ")
 	fmt.Scanln(&sessionExpiry)
 	fmt.Println("Starting up server")
 	var dbErr error
@@ -438,5 +438,6 @@ func main() {
 		http.ListenAndServe(":8000", nil)
 	} else {
 		fmt.Println("Error: Invalid login details")
+		panic(dbErr)
 	}
 }
